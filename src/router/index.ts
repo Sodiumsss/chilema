@@ -7,16 +7,21 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../views/welcome.vue'),
     children:
         [
-          {
+            {
             path: '/create',
             name: 'Create',
             component: () => import('../components/welcome/Create.vue')
-          },
-          {
+            },
+            {
             path: '/guest',
             name: 'Guest',
             component: () => import('../components/welcome/Guest.vue')
-          },
+            },
+            {
+                path: '/login',
+                name: 'Login',
+                component: () => import('../components/welcome/Login.vue')
+            },
         ]
   },
     {

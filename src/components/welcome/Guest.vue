@@ -13,8 +13,8 @@
               <p>你好像是第一次使用，让我了解一下你的口味！</p>
               <el-divider class="divider"></el-divider>
               <el-row justify="center">
-                <el-button style="font-weight: bold" @click="jumpCreate">创建账号</el-button>
-                <el-button>登录账号</el-button>
+                <el-button @click="jump(1)">创建账号</el-button>
+                <el-button @click="jump(2)">登录账号</el-button>
               </el-row>
             </el-row>
           </div>
@@ -49,9 +49,16 @@ function roll()
 }
 
 
-function jumpCreate()
+function jump(type :number)
 {
-  router.push('Create');
+  if(type===1)
+  {
+    router.push('create');
+  }
+  else if (type===2)
+  {
+    router.push('login');
+  }
 }
 
 </script>

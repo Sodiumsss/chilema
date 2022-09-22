@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <el-container v-loading="loading">
       <el-main>
         <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
           <!--进度条-->
@@ -145,6 +145,7 @@ import axios from "axios";
 import qs from "qs";
 import * as my from '../../myFunc'
 import {onMounted, ref, watch} from "vue";
+import router from "@/router";
 const Base64 = require('js-base64').Base64;
 
 //属性
@@ -163,7 +164,7 @@ const step4=ref([0,0,0]);
 const nowStep=ref<number>(0);
 const buttonText=ref<string>("我选好了");
 const accountCrash=ref<boolean>(false);
-
+const loading=ref<boolean>(false);
 //提示
 onMounted(()=> {
   document.title='请让我了解一下！';
@@ -291,13 +292,18 @@ function sendToServer()
       'password':password.value
     });
 
-    console.log(info);
     const data=Base64.encode (info);
+    loading.value=true;
 
-    axios.post("http://"+my.ip+":"+my.port+"/add", qs.stringify({'info':data}),{headers:{'Created':'yoyo!'}})
+    axios.post("http://"+my.ip+":"+my.port+"/create", qs.stringify({'info':data}),{headers:{'Created':'yoyo!'}})
         .then((res: any)=>
     {
-      console.log(res);
+      const callBack=new my.R(res);
+      if (callBack.success())
+      {
+        ElMessage.success({message:callBack.getMessage(),duration:2300});
+        router.push('login');
+      }
     })
         .catch((res:any)=>
         {
@@ -313,6 +319,8 @@ function sendToServer()
           }
         }
     )
+    loading.value=false;
+
 
   })
 }
