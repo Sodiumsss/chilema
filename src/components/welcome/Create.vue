@@ -146,8 +146,10 @@ import qs from "qs";
 import * as my from '../../myFunc'
 import {onMounted, ref, watch} from "vue";
 import router from "@/router";
-const Base64 = require('js-base64').Base64;
+import md5 from 'js-md5'
 
+//导入
+const Base64 = require('js-base64').Base64;
 //属性
 const username = ref<string>("");
 const password = ref<string>("");
@@ -289,7 +291,7 @@ function sendToServer()
       'nickname':nickname.value,
       'schoolId':schoolId.value,
       'birthYear':birthYear.value,
-      'password':password.value
+      'password':md5(password.value)
     });
 
     const data=Base64.encode (info);
@@ -307,6 +309,7 @@ function sendToServer()
     })
         .catch((res:any)=>
         {
+          const callBack=new my.R(res);
           console.log(res)
           if (res.code==="ERR_NETWORK")
           {
@@ -314,8 +317,10 @@ function sendToServer()
           }
           else
           {
-            ElMessage.error({message:"出现错误！",duration:2500});
-
+            if (callBack.failed())
+            {
+              ElMessage.error({message:callBack.getMessage(),duration:2500});
+            }
           }
         }
     )
