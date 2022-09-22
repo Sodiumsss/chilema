@@ -146,7 +146,7 @@ import qs from "qs";
 import * as my from '../../myFunc'
 import {onMounted, ref, watch} from "vue";
 import router from "@/router";
-import md5 from 'js-md5'
+const md5 =require('js-md5');
 
 //导入
 const Base64 = require('js-base64').Base64;
@@ -297,7 +297,7 @@ function sendToServer()
     const data=Base64.encode (info);
     loading.value=true;
 
-    axios.post("http://"+my.ip+":"+my.port+"/create", qs.stringify({'info':data}),{headers:{'Created':'yoyo!'}})
+    axios.post("http://"+my.ip+":"+my.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
         .then((res: any)=>
     {
       const callBack=new my.R(res);
@@ -306,22 +306,14 @@ function sendToServer()
         ElMessage.success({message:callBack.getMessage(),duration:2300});
         router.push('login');
       }
+      else
+      {
+          ElMessage.error({message:callBack.getMessage(),duration:2500});
+      }
     })
-        .catch((res:any)=>
+        .catch(()=>
         {
-          const callBack=new my.R(res);
-          console.log(res)
-          if (res.code==="ERR_NETWORK")
-          {
             ElMessage.error({message:"连接出错！",duration:2500});
-          }
-          else
-          {
-            if (callBack.failed())
-            {
-              ElMessage.error({message:callBack.getMessage(),duration:2500});
-            }
-          }
         }
     )
     loading.value=false;

@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted,ref,computed} from "vue";
+import {ref,computed} from "vue";
 import router from "@/router";
 
 const showCreatePage=ref<boolean>(false);
@@ -39,9 +39,7 @@ const getTime=computed(()=>{
   if (hours >=21) {return '要吃夜宵吗？';}
   return '吃了吗？';
 })
-onMounted(()=>{
-  //此处需要检查本地是否有已登录账号并进行校验
-})
+
 
 function roll()
 {

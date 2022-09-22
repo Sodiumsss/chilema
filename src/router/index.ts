@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
-  {
+
+    {
     path: '/',
     name: 'welcome',
     component: () => import('../views/welcome.vue'),
@@ -22,8 +23,20 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'Login',
                 component: () => import('../components/welcome/Login.vue')
             },
+            {
+                path: '/forgetPW',
+                name: 'forgetPW',
+                component: () => import('../components/welcome/ForgetPW.vue')
+            },
         ]
-  },
+
+    },
+    {
+        path: '/index',
+        name: 'index',
+        component: () => import('../views/index.vue')
+    },
+
     {
         path: '/:catchAll(.*)',
         name: '404',
