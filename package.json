@@ -7,8 +7,13 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.9",
+    "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "element-plus": "^2.2.17",
+    "js-base64": "^3.7.2",
     "vue": "^3.2.13",
+    "vue-axios": "^3.4.1",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.3"
   },
