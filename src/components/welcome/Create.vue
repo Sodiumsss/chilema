@@ -1,5 +1,4 @@
 <template>
-  <div class="main">
     <el-container>
       <el-main>
         <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
@@ -131,12 +130,11 @@
           <el-row v-if="nowStep<=3" justify="center">
             <el-button v-if="nowStep>0" @click="backStep">回去看看</el-button>
 
-            <el-button @click="forwardStep"><a v-text="buttonText"></a></el-button>
+            <el-button @click="forwardStep"><a style="font-weight: bold" v-text="buttonText"></a></el-button>
           </el-row>
         </el-card>
       </el-main>
     </el-container>
-  </div>
 </template>
 
 
@@ -145,6 +143,7 @@
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 import qs from "qs";
+import * as my from '../../myFunc'
 import {onMounted, ref, watch} from "vue";
 const Base64 = require('js-base64').Base64;
 
@@ -295,7 +294,7 @@ function sendToServer()
     console.log(info);
     const data=Base64.encode (info);
 
-    axios.post("http://localhost:6324/add", qs.stringify({'info':data}),{headers:{'Created':'yoyo!'}})
+    axios.post("http://"+my.ip+":"+my.port+"/add", qs.stringify({'info':data}),{headers:{'Created':'yoyo!'}})
         .then((res: any)=>
     {
       console.log(res);
@@ -386,10 +385,5 @@ function tooltip4(a: number)
 </script>
 
 <style scoped>
-.main{
-  background-color: bisque;
-  height: 100%;
-  width: 100%;
-  position: fixed;
-}
+
 </style>

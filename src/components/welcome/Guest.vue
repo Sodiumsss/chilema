@@ -1,5 +1,4 @@
 <template>
-<div class="guest">
   <el-container>
     <el-main>
       <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
@@ -23,7 +22,6 @@
       </el-card>
     </el-main>
   </el-container>
-</div>
 
 </template>
 
@@ -59,12 +57,7 @@ function jumpCreate()
 </script>
 
 <style scoped>
-.guest{
-  background-color: bisque;
-  height: 100%;
-  width: 100%;
-  position: fixed;
-}
+
 .divider{
   margin-top: 10px;margin-bottom: 10px;
 }
