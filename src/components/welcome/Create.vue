@@ -94,7 +94,7 @@
           <div v-if="nowStep===3">
             <el-row justify="center">
               <el-space direction="vertical">
-                <a>你的性别</a>
+                <a>性别</a>
                 <el-radio-group v-model="step4[0]">
                   <el-radio label='1'>男</el-radio>
                   <el-radio label='2'>女</el-radio>
