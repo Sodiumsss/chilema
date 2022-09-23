@@ -147,7 +147,6 @@ import {onMounted, ref, watch} from "vue";
 import router from "@/router";
 import qs from 'qs'
 const md5 =require('js-md5');
-
 //导入
 const Base64 = require('js-base64').Base64;
 //属性
@@ -167,6 +166,8 @@ const nowStep=ref<number>(0);
 const buttonText=ref<string>("我选好了");
 const accountCrash=ref<boolean>(false);
 const loading=ref<boolean>(false);
+const cookies=my.getThis().$cookies;
+
 //提示
 onMounted(()=> {
   document.title='请让我了解一下！';
@@ -300,6 +301,7 @@ function sendToServer()
       if (callBack.success())
       {
         ElMessage.success({message:callBack.getMessage(),duration:2300});
+        cookies.set("nickname",nickname.value,-1);
         router.push('login');
       }
       else

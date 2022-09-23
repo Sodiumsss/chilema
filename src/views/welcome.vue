@@ -9,15 +9,19 @@
 <script lang="ts" setup>
 import {onMounted} from "vue"
 import * as myFunc from "@/myFunc";
-import router from "@/router";
 const my=myFunc.getThis();
+import router from "@/router";
 
 onMounted(()=>{
 
   if (!(my.$cookies.isKey("username") && my.$cookies.isKey("password")))
   {
+    console.log("test by welcome");
+
     my.$cookies.remove("username");
     my.$cookies.remove("password");
+    my.$cookies.remove("nickname");
+
     router.push('guest');
   }
   else

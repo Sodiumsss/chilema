@@ -66,6 +66,7 @@ function login()
           ElMessage.success({message:callBack.getMessage(),duration:2300});
           my.$cookies.set("username",username.value,'30d');
           my.$cookies.set("password",md5(password.value,'30d'));
+
           router.push('index');
         }
         else

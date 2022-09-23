@@ -3,6 +3,28 @@
 </template>
 
 
+<script lang="ts" setup>
+
+import {onMounted} from "vue";
+import router from "@/router";
+import * as myFunc from "@/myFunc";
+const my=myFunc.getThis();
+onMounted(()=>
+{
+  if (!(my.$cookies.isKey("username") && my.$cookies.isKey("password")))
+  {
+    console.log("test by App");
+
+    my.$cookies.remove("username");
+    my.$cookies.remove("password");
+    my.$cookies.remove("nickname");
+    router.push('guest');
+  }
+
+
+})
+</script>
+
 <style>
 body{
   margin: 0;
