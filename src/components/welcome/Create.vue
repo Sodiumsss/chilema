@@ -9,6 +9,10 @@
             <el-step title="三餐"/>
             <el-step title="创建"/>
           </el-steps>
+          <el-alert center effect="dark" type="info">
+           <p>我们提供的选项可能没有到达你的预期，但是没关系，我们正在改进！</p>
+
+          </el-alert>
           <!--Step1-->
           <div v-if="nowStep===0">
             <el-row justify="center"><p>你喜欢/讨厌什么？</p></el-row>
@@ -124,10 +128,17 @@
             </el-row>
           </div>
           <!--按钮-->
-          <el-row v-if="nowStep<=3" justify="center">
-            <el-button v-if="nowStep>0" @click="backStep">回去看看</el-button>
 
-            <el-button @click="forwardStep"><a style="font-weight: bold" v-text="buttonText"></a></el-button>
+
+          <el-row v-if="nowStep<=3" justify="center">
+            <el-space>
+              <el-button  @click="backPage">返回首页</el-button>
+
+              <el-button v-if="nowStep>0" @click="backStep">回到上一步</el-button>
+
+              <el-button @click="forwardStep"><a style="font-weight: bold" v-text="buttonText"></a></el-button>
+            </el-space>
+
           </el-row>
         </el-card>
       </el-main>
@@ -166,12 +177,12 @@ const loading=ref<boolean>(false);
 const cookies=myFunc.getCookies();
 
 //提示
-onMounted(()=> {
-  document.title='请让我了解一下！';
-  ElMessage.info({message:"注意，我们提供的选项可能没有到达你的预期，但是没关系，我们正在改进！",duration:2500});
-    })
+onMounted(()=> {document.title='请让我了解一下！';})
 
-
+function backPage()
+{
+  router.push('guest');
+}
 
 function backStep()
 {

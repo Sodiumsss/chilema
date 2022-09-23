@@ -13,7 +13,7 @@
 
           <div v-if="showCreatePage">
             <el-row  justify="center">
-              <p>你好像是第一次使用，让我了解一下你的口味！</p>
+              <p v-text="getText"></p>
               <el-divider class="divider"></el-divider>
               <el-row justify="center">
                 <el-button @click="jump(1)">创建账号</el-button>
@@ -43,6 +43,17 @@ const getTime=computed(()=>{
   if (hours >16) {return '吃晚饭了吗？';}
   if (hours >=21) {return '要吃夜宵吗？';}
   return '吃了吗？';
+})
+
+const getText=computed(()=>{
+  if (cookies.isKey("already"))
+  {
+    return '嘿，朋友，别来无恙啊！';
+  }
+  else
+  {
+    return '你好像是第一次使用，让我了解一下你的口味！';
+  }
 })
 
 
