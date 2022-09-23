@@ -145,6 +145,7 @@ import axios from "axios";
 import * as my from '../../myFunc'
 import {onMounted, ref, watch} from "vue";
 import router from "@/router";
+import qs from 'qs'
 const md5 =require('js-md5');
 
 //导入
@@ -290,8 +291,8 @@ function sendToServer()
 
     const data=Base64.encode (info);
     loading.value=true;
-
-    axios.post("http://"+my.ip+":"+my.port+"/api/user/create", data,{headers:{'Create':'yoyo!'}})
+    console.log(qs.stringify({'info':data}))
+    axios.post("http://"+my.ip+":"+my.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
         .then((res: any)=>
     {
       const callBack=new my.R(res);
