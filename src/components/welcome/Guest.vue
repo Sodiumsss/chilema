@@ -6,6 +6,9 @@
           <h1>嗨，{{getTime}}</h1>
           <el-divider class="divider"></el-divider>
           <el-button @click="roll" round>帮我看看有什么好吃的吧！</el-button>
+
+          <el-button @click="test" round>Test！</el-button>
+
         </el-row>
         <Transition name="a">
           <div v-if="showCreatePage">
@@ -28,7 +31,9 @@
 <script lang="ts" setup>
 import {ref,computed} from "vue";
 import router from "@/router";
-
+import * as my from "@/myFunc.ts"
+import axios from "axios";
+import qs from "qs";
 const showCreatePage=ref<boolean>(false);
 const getTime=computed(()=>{
   const hours = new Date().getHours();
@@ -45,7 +50,16 @@ function roll()
 {
     showCreatePage.value=true;
 }
+function test()
+{
+  const p = new my.UserAccount();
+  console.log(p);
 
+  axios.post("http://"+my.ip+":"+my.port+"/api/user/test", qs.stringify(p)).then(()=>{
+    console.log("send success");
+  });
+
+}
 
 function jump(type :number)
 {
