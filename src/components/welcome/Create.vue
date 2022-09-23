@@ -282,7 +282,7 @@ function sendToServer()
     center:true
   }).then(()=>
   {
-    const par1=new my.Favor(step1.value,step2.value,step3.value,step4.value);
+    const par1=new my.Favor(username.value,step1.value,step2.value,step3.value,step4.value);
     const par2=new my.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value);
     const info=JSON.stringify({
       'UserAccount':par2,
