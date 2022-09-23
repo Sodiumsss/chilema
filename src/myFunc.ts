@@ -39,7 +39,7 @@ class R
 
 class UserAccount
 {
-    id :number;
+    id :any;
     username :string;
     password :string;
     schoolId :number;
@@ -47,7 +47,7 @@ class UserAccount
 
     constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1)
     {
-        this.id=-1;
+        this.id=null;
         this.username=username;
         this.password=password;
         this.schoolId=schoolId;
