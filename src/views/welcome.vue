@@ -14,9 +14,15 @@ const my=myFunc.getThis();
 
 onMounted(()=>{
 
-  if (!my.$cookies.isKey("username"))
+  if (!(my.$cookies.isKey("username") && my.$cookies.isKey("password")))
   {
-    router.push('guest')
+    my.$cookies.remove("username");
+    my.$cookies.remove("password");
+    router.push('guest');
+  }
+  else
+  {
+    router.push('index');
   }
 
 })

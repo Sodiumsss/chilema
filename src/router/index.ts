@@ -33,7 +33,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/index',
-        name: 'index',
+        name: 'Index',
         component: () => import('../views/index.vue')
     },
 
