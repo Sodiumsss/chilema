@@ -44,14 +44,16 @@ class UserAccount
     password :string;
     schoolId :number;
     birthYear :number;
+    nickname :string;
 
-    constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1)
+    constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1,nickname :string="")
     {
         this.id=null;
         this.username=username;
         this.password=password;
         this.schoolId=schoolId;
         this.birthYear=birthYear;
+        this.nickname=nickname;
     }
 
 
