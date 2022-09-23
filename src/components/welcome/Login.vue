@@ -32,15 +32,17 @@ import {ref} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import axios from "axios";
-import * as my from "@/myFunc";
 import qs from "qs";
-const md5 = require('js-md5');
+import * as myF from '@/myFunc'
 import {Base64} from "js-base64";
 
+
+
+const md5 = require('js-md5');
+const my=myF.getThis();
 const username=ref<string>("");
 const password=ref<string>("");
 const loading=ref<boolean>(false);
-
 
 function login()
 {
@@ -52,12 +54,19 @@ function login()
   loading.value=true;
   const info=JSON.stringify({'username':username.value,'password':md5(password.value)});
   const data=Base64.encode (info);
-  axios.post("http://"+my.ip+":"+my.port+"/api/user/login", qs.stringify({'info':data}),{headers:{'Login':'yoyo!'}})
+
+
+  console.log("http://"+myF.ip+":"+myF.port+"/api/user/login");
+
+  axios.post("http://"+myF.ip+":"+myF.port+"/api/user/login", qs.stringify({'info':data}),{headers:{'Login':'yoyo!'}})
       .then((res :any) =>{
-        const callBack=new my.R(res);
+        const callBack=new myF.R(res);
         if (callBack.success())
         {
           ElMessage.success({message:callBack.getMessage(),duration:2300});
+          my.$cookies.set("username",username.value,'30d');
+          my.$cookies.set("password",md5(password.value,'30d'));
+          router.push('index');
         }
         else
         {
@@ -65,10 +74,11 @@ function login()
         }
 
       })
-      .catch(()=>{
+      .catch((res :any)=>{
+
+        console.log(res);
           ElMessage.error({message:"连接出错！",duration:2500});
       })
-
   loading.value=false;
 
 }

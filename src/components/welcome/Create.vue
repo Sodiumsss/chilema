@@ -292,6 +292,7 @@ function sendToServer()
     const data=Base64.encode (info);
     loading.value=true;
     console.log(qs.stringify({'info':data}))
+
     axios.post("http://"+my.ip+":"+my.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
         .then((res: any)=>
     {
