@@ -45,9 +45,9 @@ class UserAccount
     schoolId :number;
     birthYear :number;
 
-    constructor(id :number=-1,username :string="",password :string="",schoolId :number=-1,birthYear :number=-1)
+    constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1)
     {
-        this.id=id;
+        this.id=-1;
         this.username=username;
         this.password=password;
         this.schoolId=schoolId;
@@ -55,9 +55,26 @@ class UserAccount
     }
 
 
+}
+
+class Favor
+{
+    step1 : number[];
+    step2 : number[];
+    step3 : boolean[];
+    step4 : number[];
+
+    constructor(step1:number[],step2 : number[],step3 : boolean[],step4 : number[])
+    {
+        this.step1=step1;
+        this.step2=step2;
+        this.step3=step3;
+        this.step4=step4;
+    }
+
 
 }
 
 export {
-    ip,port,getThis,R,UserAccount
+    ip,port,getThis,R,UserAccount,Favor
 }

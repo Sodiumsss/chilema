@@ -142,7 +142,6 @@
 <script lang="ts" setup>
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
-import qs from "qs";
 import * as my from '../../myFunc'
 import {onMounted, ref, watch} from "vue";
 import router from "@/router";
@@ -282,23 +281,17 @@ function sendToServer()
     center:true
   }).then(()=>
   {
+    const par1=new my.Favor(step1.value,step2.value,step3.value,step4.value);
+    const par2=new my.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value);
     const info=JSON.stringify({
-      'step1':step1.value,
-      'step2':step2.value,
-      'step3':step3.value,
-      'step3_radio':step3_radio.value,
-      'step4':step4.value,
-      'username':username.value,
-      'nickname':nickname.value,
-      'schoolId':schoolId.value,
-      'birthYear':birthYear.value,
-      'password':md5(password.value)
+      'UserAccount':par2,
+      'Favor':par1
     });
 
     const data=Base64.encode (info);
     loading.value=true;
 
-    axios.post("http://"+my.ip+":"+my.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
+    axios.post("http://"+my.ip+":"+my.port+"/api/user/create", data,{headers:{'Create':'yoyo!'}})
         .then((res: any)=>
     {
       const callBack=new my.R(res);
