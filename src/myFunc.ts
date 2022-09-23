@@ -59,13 +59,17 @@ class UserAccount
 
 class Favor
 {
+    id : any;
+    username: string;
     step1 : number[];
     step2 : number[];
     step3 : boolean[];
     step4 : number[];
 
-    constructor(step1:number[],step2 : number[],step3 : boolean[],step4 : number[])
+    constructor(username:string,step1:number[],step2 : number[],step3 : boolean[],step4 : number[])
     {
+        this.id=null;
+        this.username=username;
         this.step1=step1;
         this.step2=step2;
         this.step3=step3;

@@ -52,11 +52,16 @@ function roll()
 }
 function test()
 {
-  const p = new my.UserAccount();
-  console.log(p);
+  const step1=ref([0,0,0,0]);
+  const step2=ref([0,0,0]);
+  const step3=ref([false,false,false]);
+  const step4=ref([0,0,0]);
+  const par1=new my.Favor("111",step1.value,step2.value,step3.value,step4.value);
 
-  axios.post("http://"+my.ip+":"+my.port+"/api/user/test", qs.stringify(p)).then(()=>{
-    console.log("send success");
+
+  console.log(par1);
+
+  axios.post("http://"+my.ip+":"+my.port+"/api/user/test", qs.stringify({'a':JSON.stringify(par1)})).then(()=>{
   });
 
 }

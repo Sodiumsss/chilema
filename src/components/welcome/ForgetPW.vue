@@ -58,10 +58,14 @@ function submit()
     if (username.value==="" || schoolId.value==="" || birthYear.value==="")
     {
       ElMessage.error({message:"请填写完整！",duration:2300});
+      loading.value=false;
+
       return;
     }
 
-    const info=JSON.stringify({'username':username.value,'schoolId':schoolId.value,'birthYear':birthYear.value,'password':md5(password.value)});
+
+
+    const info=JSON.stringify(new my.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value));
     const data=Base64.encode (info);
     axios.post("http://"+my.ip+":"+my.port+"/api/user/forgetPW",
         qs.stringify({'info':data}),{headers:{'forgetPW':'yoyo!'}})
@@ -79,17 +83,9 @@ function submit()
         })
         .catch(()=>{
           ElMessage.error({message:"连接出错！",duration:2500});
-
         })
-
-
-
-
-
-
-
-
   loading.value=false;
+
 
 }
 function goBack()
