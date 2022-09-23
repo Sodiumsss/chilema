@@ -116,15 +116,12 @@
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
                 <el-input show-word-limit maxlength="5" v-model="schoolId"></el-input>
-
                 <a>出生年份<el-tooltip content="找回账号的重要部分。">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
                 <el-input show-word-limit maxlength="4" v-model="birthYear"></el-input>
               </el-space>
-
             </el-row>
-
           </div>
           <!--按钮-->
           <el-row v-if="nowStep<=3" justify="center">
@@ -142,8 +139,8 @@
 <script lang="ts" setup>
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
-import * as my from '../../myFunc'
-import {onMounted, ref, watch} from "vue";
+import * as myFunc from '../../myFunc'
+import {onMounted, ref} from "vue";
 import router from "@/router";
 import qs from 'qs'
 const md5 =require('js-md5');
@@ -166,26 +163,21 @@ const nowStep=ref<number>(0);
 const buttonText=ref<string>("我选好了");
 const accountCrash=ref<boolean>(false);
 const loading=ref<boolean>(false);
-const cookies=my.getThis().$cookies;
+const cookies=myFunc.getCookies();
 
 //提示
 onMounted(()=> {
   document.title='请让我了解一下！';
-  ElMessage.info({message:"注意，我们提供的选项可能没有到达你的预期，但是没关系，我们正在改进！",duration:2300});
+  ElMessage.info({message:"注意，我们提供的选项可能没有到达你的预期，但是没关系，我们正在改进！",duration:2500});
     })
-//侦听
-watch(nowStep,(value)=>{
-  console.log(value)
-  if(value===3)
-  {
-    buttonText.value="创建";
-  }
-})
+
+
 
 function backStep()
 {
   nowStep.value--;
 }
+
 function forwardStep()
 {
   switch (nowStep.value)
@@ -214,8 +206,6 @@ function forwardStep()
           }
         }
       }
-
-
       break;
     case 3:
       if (step4.value[0]===0)
@@ -270,6 +260,7 @@ function forwardStep()
     nowStep.value=3;
     sendToServer();
   }
+  else if (nowStep.value===3) {buttonText.value="创建";}
 }
 
 function sendToServer()
@@ -283,8 +274,8 @@ function sendToServer()
     center:true
   }).then(()=>
   {
-    const par1=new my.Favor(username.value,step1.value,step2.value,step3.value,step4.value);
-    const par2=new my.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value,nickname.value);
+    const par1=new myFunc.Favor(username.value,step1.value,step2.value,step3.value,step4.value);
+    const par2=new myFunc.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value,nickname.value);
     const info=JSON.stringify({
       'UserAccount':par2,
       'Favor':par1
@@ -294,10 +285,10 @@ function sendToServer()
     loading.value=true;
     console.log(qs.stringify({'info':data}))
 
-    axios.post("http://"+my.ip+":"+my.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
+    axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
         .then((res: any)=>
     {
-      const callBack=new my.R(res);
+      const callBack=new myFunc.R(res);
       if (callBack.success())
       {
         ElMessage.success({message:callBack.getMessage(),duration:2300});

@@ -1,36 +1,22 @@
 <template>
-
   <div class="main">
     <router-view/>
-
   </div>
 </template>
-
 <script lang="ts" setup>
 import {onMounted} from "vue"
 import * as myFunc from "@/myFunc";
-const my=myFunc.getThis();
+const cookies = myFunc.getCookies();
 import router from "@/router";
 
 onMounted(()=>{
-
-  if (!(my.$cookies.isKey("username") && my.$cookies.isKey("password")))
+  if (!(cookies.isKey("username") && cookies.isKey("password")))
   {
-    console.log("test by welcome");
-
-    my.$cookies.remove("username");
-    my.$cookies.remove("password");
-    my.$cookies.remove("nickname");
-
-    router.push('guest');
+    myFunc.clearAccountCookies(cookies);
   }
-  else
-  {
-    router.push('index');
-  }
+  router.push('guest');
 
 })
-
 </script>
 
 <style scoped>
@@ -40,5 +26,4 @@ onMounted(()=>{
   width: 100%;
   position: fixed;
 }
-
 </style>

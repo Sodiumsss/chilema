@@ -7,6 +7,19 @@ function getThis() {
     const { appContext } = getCurrentInstance() as ComponentInternalInstance
     return appContext.config.globalProperties
 }
+function clearAccountCookies(_ :any)
+{
+    _.remove("username");
+    _.remove("password");
+    _.remove("nickname");
+}
+
+function getCookies()
+{
+    return getThis().$cookies;
+}
+
+
 class R
 {
     code :number;
@@ -82,5 +95,5 @@ class Favor
 }
 
 export {
-    ip,port,getThis,R,UserAccount,Favor
+    ip,port,getThis,R,UserAccount,Favor,clearAccountCookies,getCookies
 }

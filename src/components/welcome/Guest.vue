@@ -5,12 +5,12 @@
         <el-row v-if="!showCreatePage" justify="center">
           <h1>嗨，{{getTime}}</h1>
           <el-divider class="divider"></el-divider>
-          <el-button @click="roll" round>帮我看看有什么好吃的吧！</el-button>
+          <el-button @click="roll" round>没呢！</el-button>
 
           <el-button @click="test" round>Test！</el-button>
 
         </el-row>
-        <Transition name="a">
+
           <div v-if="showCreatePage">
             <el-row  justify="center">
               <p>你好像是第一次使用，让我了解一下你的口味！</p>
@@ -21,7 +21,6 @@
               </el-row>
             </el-row>
           </div>
-        </Transition>
       </el-card>
     </el-main>
   </el-container>
@@ -31,15 +30,16 @@
 <script lang="ts" setup>
 import {ref,computed} from "vue";
 import router from "@/router";
-import * as my from "@/myFunc"
+import * as myFunc from "@/myFunc"
 import axios from "axios";
 import qs from "qs";
+const cookies = myFunc.getCookies();
 const showCreatePage=ref<boolean>(false);
 const getTime=computed(()=>{
   const hours = new Date().getHours();
   if (hours>=6 && hours<10){return '吃早饭了吗？';}
   if (hours>=10 && hours<=14) {return '吃午饭了吗？';}
-  if (hours>14 && hours <=16) {return '睡午觉了吗？';}
+  if (hours>14 && hours <=16) {return '想好晚饭吃什么了吗？';}
   if (hours >16) {return '吃晚饭了吗？';}
   if (hours >=21) {return '要吃夜宵吗？';}
   return '吃了吗？';
@@ -48,7 +48,16 @@ const getTime=computed(()=>{
 
 function roll()
 {
+  if (!(cookies.isKey("username") && cookies.isKey("password")))
+  {
+    myFunc.clearAccountCookies(cookies);
     showCreatePage.value=true;
+  }
+  else
+  {
+    router.push('index');
+  }
+
 }
 function test()
 {
@@ -56,28 +65,21 @@ function test()
   const step2=ref([0,0,0]);
   const step3=ref([false,false,false]);
   const step4=ref([0,0,0]);
-  const par1=new my.Favor("111",step1.value,step2.value,step3.value,step4.value);
+  const par1=new myFunc.Favor("111",step1.value,step2.value,step3.value,step4.value);
 
 
   console.log(par1);
 
-  axios.post("http://"+my.ip+":"+my.port+"/api/user/test", qs.stringify({'a':JSON.stringify(par1)})).then(()=>{
+  axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/test", qs.stringify({'a':JSON.stringify(par1)})).then(()=>{
   });
 
 }
 
 function jump(type :number)
 {
-  if(type===1)
-  {
-    router.push('create');
-  }
-  else if (type===2)
-  {
-    router.push('login');
-  }
+  if(type===1) {router.push('create');}
+  else if (type===2) {router.push('login');}
 }
-
 </script>
 
 <style scoped>
@@ -86,17 +88,4 @@ function jump(type :number)
   margin-top: 10px;margin-bottom: 10px;
 }
 
-.a-enter-active
-{
-  transition: opacity 3s ease;
-
-}
-
-.a-leave-active {
-}
-
-.a-enter-from,
-.a-leave-to {
-  opacity: 0;
-}
 </style>

@@ -28,21 +28,24 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import axios from "axios";
 import qs from "qs";
-import * as myF from '@/myFunc'
+import * as myFunc from '@/myFunc'
 import {Base64} from "js-base64";
 
-
-
 const md5 = require('js-md5');
-const my=myF.getThis();
+
+
 const username=ref<string>("");
 const password=ref<string>("");
 const loading=ref<boolean>(false);
+let cookies:any=null;
+onMounted(()=>{
+   cookies=myFunc.getCookies()
+})
 
 function login()
 {
@@ -54,18 +57,15 @@ function login()
   loading.value=true;
   const info=JSON.stringify({'username':username.value,'password':md5(password.value)});
   const data=Base64.encode (info);
-
-
-  console.log("http://"+myF.ip+":"+myF.port+"/api/user/login");
-
-  axios.post("http://"+myF.ip+":"+myF.port+"/api/user/login", qs.stringify({'info':data}),{headers:{'Login':'yoyo!'}})
+  axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/login", qs.stringify({'info':data}),{headers:{'Login':'yoyo!'}})
       .then((res :any) =>{
-        const callBack=new myF.R(res);
+        const callBack=new myFunc.R(res);
         if (callBack.success())
         {
           ElMessage.success({message:callBack.getMessage(),duration:2300});
-          my.$cookies.set("username",username.value,'30d');
-          my.$cookies.set("password",md5(password.value,'30d'));
+          cookies.set("username",username.value,'30d');
+          cookies.set("password",md5(password.value),'30d');
+          cookies.set("already",1,-1);
 
           router.push('index');
         }
@@ -73,28 +73,12 @@ function login()
         {
           ElMessage.error({message:callBack.getMessage(),duration:2500});
         }
-
       })
-      .catch((res :any)=>{
-
-        console.log(res);
-          ElMessage.error({message:"连接出错！",duration:2500});
+      .catch(()=>{
+        ElMessage.error({message:"连接出错！",duration:2500});
       })
   loading.value=false;
-
 }
-
-function forgetPassword()
-{
-  router.push("forgetPW");
-}
-
-function goBack()
-{
-  router.push('/guest');
-}
+function forgetPassword() {router.push("forgetPW");}
+function goBack() {router.push('/guest');}
 </script>
-
-<style scoped>
-
-</style>

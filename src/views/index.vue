@@ -26,11 +26,7 @@
                   <el-menu-item index="1-1-2">2</el-menu-item>
                 </el-menu-item-group>
 
-                <el-menu-item-group>
-                  <template #title>G2</template>
-                  <el-menu-item index="1-2-1">3</el-menu-item>
-                  <el-menu-item index="1-2-2">4</el-menu-item>
-                </el-menu-item-group>
+
               </el-sub-menu>
 
               <el-sub-menu index="2">
@@ -39,6 +35,12 @@
                   <template #title>G1</template>
                   <el-menu-item index="2-1-1">1</el-menu-item>
                   <el-menu-item index="2-1-2">2</el-menu-item>
+                </el-menu-item-group>
+
+                <el-menu-item-group>
+                  <template #title>G2</template>
+                  <el-menu-item index="2-2-1">3</el-menu-item>
+                  <el-menu-item index="2-2-2">4</el-menu-item>
                 </el-menu-item-group>
               </el-sub-menu>
 
@@ -72,22 +74,35 @@ import axios from "axios";
 import qs from "qs";
 import {Base64} from "js-base64";
 import {ElMessage} from "element-plus";
-const my=myFunc.getThis().$cookies;
+import {clearAccountCookies} from "@/myFunc";
+const cookies=myFunc.getCookies();
 
-const username=ref<string>(my.get("username"));
-const password=ref<string>(my.get("password"));
-const nickname=ref<string>(my.get("nickname"));
+const username=ref<string>(cookies.get("username"));
+const password=ref<string>(cookies.get("password"));
+const nickname=ref<string>(cookies.get("nickname"));
 
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
+  switch (key)
+  {
+    case '4':
+      clearAccountCookies(cookies);
+      router.push('guest');
+      break;
+
+  }
   //['1', '1-1-2']
 }
 
 
 onMounted(()=>{
-  if (!(my.isKey("username") && my.isKey("password")))
+
+
+  if (!(cookies.isKey("username") && cookies.isKey("password")))
   {
+    myFunc.clearAccountCookies(cookies);
     router.push('guest');
+
   }
   else
   {
@@ -103,28 +118,22 @@ onMounted(()=>{
         if (tmp ==null)
         {
           ElMessage.error({message:"连接出错，请重新登录！",duration:2500});
-          my.remove("username");
-          my.remove("password");
-          my.remove("nickname")
+          myFunc.clearAccountCookies(cookies);
           router.push('guest');
         }
         nickname.value=tmp;
-        my.set("nickname",nickname.value,-1);
+        cookies.set("nickname",nickname.value,-1);
 
       }
       else
       {
         ElMessage.error({message:callBack.getMessage(),duration:2500});
-        my.remove("username");
-        my.remove("password");
-        my.remove("nickname")
+        myFunc.clearAccountCookies(cookies);
         router.push('guest');
       }
     }).catch(()=>{
       ElMessage.error({message:"连接出错，请重新登录！",duration:2500});
-      my.remove("username");
-      my.remove("password");
-      my.remove("nickname")
+      myFunc.clearAccountCookies(cookies);
       router.push('guest');
     });
   }
