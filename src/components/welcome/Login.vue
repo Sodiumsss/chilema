@@ -80,7 +80,7 @@ function forgetPassword()
 
 function goBack()
 {
-  router.back();
+  router.push('/guest');
 }
 </script>
 

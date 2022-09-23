@@ -31,7 +31,7 @@
 <script lang="ts" setup>
 import {ref,computed} from "vue";
 import router from "@/router";
-import * as my from "@/myFunc.ts"
+import * as my from "@/myFunc"
 import axios from "axios";
 import qs from "qs";
 const showCreatePage=ref<boolean>(false);

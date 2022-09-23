@@ -174,13 +174,10 @@ onMounted(()=> {
     })
 //侦听
 watch(nowStep,(value)=>{
+  console.log(value)
   if(value===3)
   {
     buttonText.value="创建";
-  }
-  if(value===4)
-  {
-    sendToServer()
   }
 })
 
@@ -267,11 +264,15 @@ function forwardStep()
   }
 
   nowStep.value++;
+  if(nowStep.value===4)
+  {
+    nowStep.value=3;
+    sendToServer();
+  }
 }
 
 function sendToServer()
 {
-  nowStep.value--;
   ElMessageBox.confirm('我们将会把你刚才填写的信息上传至服务器，并且使用Cookies在你的本地存储一些数据。' +
       '请放心，我们不会对你的信息通过任何方式转让。' +
       '并且，你刚才填写的信息没有任何敏感内容，对吧？我们将对大家上传的信息进行大数据分析，然后把推荐结果反馈给你。','警告',{
