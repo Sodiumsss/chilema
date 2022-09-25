@@ -96,36 +96,47 @@
           </div>
           <!--Step4-->
           <div v-if="nowStep===3">
+            <el-form>
             <el-row justify="center">
               <el-space direction="vertical">
+
+
+
                 <a>性别</a>
                 <el-radio-group v-model="step4[0]">
                   <el-radio label='1'>男</el-radio>
                   <el-radio label='2'>女</el-radio>
                 </el-radio-group>
-                <a>称呼<el-tooltip content="不用担心，称呼可以随时更改。">
+                <a>称呼<el-tooltip content="不用担心，称呼可以随时更改">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
                 <el-input v-model="nickname"></el-input>
 
-                <a>账号</a>
-                <el-input show-word-limit maxlength="15" v-model="username"></el-input><a v-if="accountCrash" style="color: red">账号已存在</a>
+                <a>账号<el-tooltip content="登录的凭证">
+                <el-icon><InfoFilled /></el-icon>
+              </el-tooltip></a>
+
+
+                <el-input @focusout="usernameFocusout" show-word-limit maxlength="15" v-model="username"></el-input><a v-if="accountCrash" style="color: red">账号已存在</a>
+
+                <span v-if="usernameInfoState"><el-icon v-if="!usernameInfoIcon" :color="usernameInfoColor"><CloseBold /></el-icon><el-icon v-if="usernameInfoIcon" :color="usernameInfoColor"><Select /></el-icon><a style="font-size: small" v-text="usernameInfo"></a></span>
 
 
                 <a>密码</a>
-                <el-input show-password v-model="password"></el-input>
+                <el-input  show-password v-model="password"></el-input>
+                <span v-if="passwordInfoState"><el-icon color="red"><CloseBold /></el-icon><a style="font-size: small">请包含6~20位数字与字母</a></span>
 
-
-                <a>学号后五位<el-tooltip content="找回账号的重要部分。">
+                <a>学号后五位<el-tooltip content="找回账号的重要部分">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
-                <el-input show-word-limit maxlength="5" v-model="schoolId"></el-input>
-                <a>出生年份<el-tooltip content="找回账号的重要部分。">
+                <el-input  show-word-limit maxlength="5" v-model="schoolId"></el-input>
+                <a>出生年份<el-tooltip content="找回账号的重要部分">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
                 <el-input show-word-limit maxlength="4" v-model="birthYear"></el-input>
               </el-space>
             </el-row>
+            </el-form>
           </div>
           <!--按钮-->
 
@@ -136,7 +147,10 @@
 
               <el-button v-if="nowStep>0" @click="backStep">回到上一步</el-button>
 
-              <el-button @click="forwardStep"><a style="font-weight: bold" v-text="buttonText"></a></el-button>
+              <el-button v-if="nowStep<=2" @click="forwardStep"><a style="font-weight: bold">我选好了</a></el-button>
+              <el-button v-if="nowStep===3" :disabled="createButtonLock" @click="forwardStep"><a style="font-weight: bold" >创建</a></el-button>
+
+
             </el-space>
 
           </el-row>
@@ -151,7 +165,7 @@
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 import * as myFunc from '../../myFunc'
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import router from "@/router";
 import qs from 'qs'
 const md5 =require('js-md5');
@@ -171,14 +185,81 @@ const step3_radio=ref([0,0,0]);
 const step4=ref([0,0,0]);
 //控制
 const nowStep=ref<number>(0);
-const buttonText=ref<string>("我选好了");
 const accountCrash=ref<boolean>(false);
 const loading=ref<boolean>(false);
 const cookies=myFunc.getCookies();
+const createButtonLock=ref<boolean>(false);
+const usernameInfoState=ref<boolean>(false);
+const usernameInfo=ref<string>("");
+const usernameInfoColor=ref<string>("green");
+const usernameInfoIcon=ref<boolean>(true);
+const passwordInfoState=ref<boolean>(false);
 
 //提示
 onMounted(()=> {document.title='请让我了解一下！';})
+//监听密码
+watch(password,(N)=>{
+  console.log(N);
+  if (password.value==="")
+  {
+    createButtonLock.value=true;
+  }
+  else
+  {
+    const r = new RegExp('(?=.*([a-zA-Z].*))(?=.*[0-9].*)[a-zA-Z0-9-*/+.~!@#$%^&()]{6,20}$');
+    if (!r.test(password.value))
+    {
+      passwordInfoState.value=true;
+      createButtonLock.value=true;
+      return;
+    }
+    passwordInfoState.value=false;
+    createButtonLock.value=false;
 
+  }
+})
+
+watch(username,()=>{
+  if (username.value==="")
+  {
+    usernameInfoState.value=false;
+    createButtonLock.value=true;
+  }
+})
+//账号检测
+function usernameFocusout()
+{
+  if (username.value===""){return;}
+
+  createButtonLock.value=true;
+  const info =new myFunc.UserAccount(username.value);
+  const data = Base64.encode(JSON.stringify(info));
+  axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/verifyUsername", qs.stringify({'info':data})).then((res :any)=>{
+    const callBack = new myFunc.R(res);
+    usernameInfoState.value=true;
+    if (callBack.success())
+    {
+      createButtonLock.value=false;
+      usernameInfo.value="可以使用"
+      usernameInfoColor.value="green";
+      usernameInfoIcon.value=true;
+
+    }
+    else
+    {
+      usernameInfo.value="账号重复"
+      usernameInfoColor.value="red";
+      usernameInfoIcon.value=false;
+
+    }
+
+  }).catch(()=>{
+    usernameInfoState.value=true;
+    usernameInfo.value="网络错误"
+    usernameInfoColor.value="red";
+    usernameInfoIcon.value=false;
+  })
+}
 function backPage()
 {
   router.push('guest');
@@ -269,9 +350,12 @@ function forwardStep()
   if(nowStep.value===4)
   {
     nowStep.value=3;
-    sendToServer();
+    usernameFocusout();
+    if (usernameInfoIcon.value===true)
+    {
+      sendToServer();
+    }
   }
-  else if (nowStep.value===3) {buttonText.value="创建";}
 }
 
 function sendToServer()

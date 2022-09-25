@@ -9,3 +9,4 @@ declare module 'element-plus'
 declare module 'axios'
 declare module '@element-plus/icons-vue'
 declare module 'vue-axios'
+

@@ -6,7 +6,7 @@
 
 
 
-        <el-header style="padding: 5px;">
+        <el-header style="padding: 13px;">
           <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
 
             <el-row justify="center">
@@ -15,40 +15,44 @@
 
           </el-card>
         </el-header>
-        <el-aside :style="{borderRadius:'var(--el-border-radius-round'}" style="margin-left: 5px; margin-top: 20px;" width="200px">
+        <el-aside :style="{borderRadius:'var(--el-border-radius-round'}" style="margin-left: 13px; margin-top: 25px;" width="130px">
           <el-scrollbar>
-            <el-menu :unique-opened=true @select="handleSelect"  default-active="1-1-1">
-              <el-sub-menu index="1">
+            <el-menu :unique-opened=true @select="handleSelect"  default-active="1">
+              <el-menu-item index="1">
+                <template #title>首页</template>
+              </el-menu-item>
+
+              <el-sub-menu index="2">
                 <template #title>推荐</template>
                 <el-menu-item-group>
                   <template #title>G1</template>
-                  <el-menu-item  index="1-1-1">1</el-menu-item>
-                  <el-menu-item index="1-1-2">2</el-menu-item>
+                  <el-menu-item  index="2-1-1">1</el-menu-item>
+                  <el-menu-item index="2-1-2">2</el-menu-item>
                 </el-menu-item-group>
 
 
               </el-sub-menu>
 
-              <el-sub-menu index="2">
+              <el-sub-menu index="3">
                 <template #title>食品</template>
                 <el-menu-item-group>
                   <template #title>G1</template>
-                  <el-menu-item index="2-1-1">1</el-menu-item>
-                  <el-menu-item index="2-1-2">2</el-menu-item>
+                  <el-menu-item index="3-1-1">1</el-menu-item>
+                  <el-menu-item index="3-1-2">2</el-menu-item>
                 </el-menu-item-group>
 
                 <el-menu-item-group>
                   <template #title>G2</template>
-                  <el-menu-item index="2-2-1">3</el-menu-item>
-                  <el-menu-item index="2-2-2">4</el-menu-item>
+                  <el-menu-item index="3-2-1">3</el-menu-item>
+                  <el-menu-item index="3-2-2">4</el-menu-item>
                 </el-menu-item-group>
               </el-sub-menu>
 
-              <el-menu-item index="3">
+              <el-menu-item index="4">
                 <template #title>个人信息</template>
               </el-menu-item>
 
-              <el-menu-item index="4">
+              <el-menu-item index="5">
                 <template #title>登出</template>
               </el-menu-item>
 
@@ -85,7 +89,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
   switch (key)
   {
-    case '4':
+    case '5':
       clearAccountCookies(cookies);
       router.push('guest');
       break;
@@ -148,8 +152,5 @@ onMounted(()=>{
   height:100%;
   position:fixed;
   background-size:100% 100%;
-}
-.card{
-  opacity: 0.85;
 }
 </style>
