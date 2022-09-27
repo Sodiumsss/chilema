@@ -34,7 +34,20 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/index',
         name: 'Index',
-        component: () => import('../views/index.vue')
+        component: () => import('../views/index.vue'),
+        children:
+        [
+            {
+                path: '/main',
+                name: 'main',
+                component: () => import('../components/index/Main.vue')
+            },
+            {
+                path: '/editMyself',
+                name: 'editMyself',
+                component: () => import('../components/index/EditMyself.vue')
+            },
+        ]
     },
 
     {

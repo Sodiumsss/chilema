@@ -18,7 +18,7 @@
             <el-row justify="center"><p>你喜欢/讨厌什么？</p></el-row>
             酸：<el-slider v-model="step1[0]" :step="25" :format-tooltip="tooltip1" show-stops></el-slider>
             甜：<el-slider v-model="step1[1]" :step="25" :format-tooltip="tooltip2" show-stops></el-slider>
-            苦：<el-slider v-model="step1[2]" :step="25" :format-tooltip="tooltip3" show-stops></el-slider>
+            麻：<el-slider v-model="step1[2]" :step="25" :format-tooltip="tooltip3" show-stops></el-slider>
             辣：<el-slider v-model="step1[3]" :step="25" :format-tooltip="tooltip4" show-stops></el-slider>
 
 

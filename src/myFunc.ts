@@ -1,7 +1,7 @@
 import {ComponentInternalInstance, getCurrentInstance} from "vue"
 
 
-const ip = "127.0.0.1";
+const ip = "10.111.15.118";
 const port = "6324";
 function getThis() {
     const { appContext } = getCurrentInstance() as ComponentInternalInstance
@@ -19,6 +19,58 @@ function getCookies()
     return getThis().$cookies;
 }
 
+class comment
+{
+    id :number;
+    food_id :number;
+    user_id :number;
+    content :string;
+    rate :number;
+    create_time :string;
+    like_num :number;
+    up :number;
+    constructor(id:number,food_id:number,user_id:number,content:string,rate:number,create_time:string,like_num:number,
+                up:number) {
+        this.id=id;
+        this.food_id=food_id;
+        this.user_id=user_id;
+        this.content=content;
+        this.rate=rate;
+        this.create_time=create_time;
+        this.like_num=like_num;
+        this.up=up;
+    }
+}
+
+
+class food{
+    id :number;
+    name :string;
+    acid :number;
+    sweet :number;
+    spicy :number;
+    pepper :number;
+    salt :number;
+    supply_time :string;
+    pic :any;
+    description :string;
+    constructor(id:number,name:string,acid:number,sweet:number,spicy:number,pepper:number,salt:number,supply_time:string
+                ,pic:any,description :string) {
+        this.id=id;
+        this.name=name;
+        this.acid=acid;
+        this.sweet=sweet;
+        this.spicy=spicy;
+        this.pepper=pepper;
+        this.salt=salt;
+        this.supply_time=supply_time;
+        this.pic=pic;
+        this.description=description;
+    }
+
+
+
+}
 
 class R
 {
@@ -36,12 +88,6 @@ class R
     {
         return this.code === 1;
     }
-
-    failed()
-    {
-        return this.code === 0;
-    }
-
     getMessage()
     {
         return this.message;

@@ -1,24 +1,10 @@
 <template>
   <div class="main">
-
-    <el-container>
-
-
-
-
-        <el-header style="padding: 13px;">
-          <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
-
-            <el-row justify="center">
-              Hi,{{nickname}}
-            </el-row>
-
-          </el-card>
-        </el-header>
-        <el-aside :style="{borderRadius:'var(--el-border-radius-round'}" style="margin-left: 13px; margin-top: 25px;" width="130px">
+      <el-container>
+        <el-aside  style="margin-left: 10px; margin-top: 20px; width: 110px;">
           <el-scrollbar>
-            <el-menu :unique-opened=true @select="handleSelect"  default-active="1">
-              <el-menu-item index="1">
+            <el-menu  :unique-opened=true @select="handleSelect"  default-active="main">
+              <el-menu-item index="main">
                 <template #title>首页</template>
               </el-menu-item>
 
@@ -29,49 +15,61 @@
                   <el-menu-item  index="2-1-1">1</el-menu-item>
                   <el-menu-item index="2-1-2">2</el-menu-item>
                 </el-menu-item-group>
-
-
               </el-sub-menu>
 
-              <el-sub-menu index="3">
-                <template #title>食品</template>
-                <el-menu-item-group>
-                  <template #title>G1</template>
-                  <el-menu-item index="3-1-1">1</el-menu-item>
-                  <el-menu-item index="3-1-2">2</el-menu-item>
-                </el-menu-item-group>
+              <el-menu-item index="3">
+                <template #title>食品查询</template>
 
-                <el-menu-item-group>
-                  <template #title>G2</template>
-                  <el-menu-item index="3-2-1">3</el-menu-item>
-                  <el-menu-item index="3-2-2">4</el-menu-item>
-                </el-menu-item-group>
-              </el-sub-menu>
+              </el-menu-item>
 
-              <el-menu-item index="4">
+              <el-menu-item index="editMyself">
                 <template #title>个人信息</template>
               </el-menu-item>
 
-              <el-menu-item index="5">
+              <el-menu-item index="quit">
                 <template #title>登出</template>
               </el-menu-item>
-
-
-
             </el-menu>
           </el-scrollbar>
         </el-aside>
-        <el-main>
+
+
+        <el-main style="padding-top: 20px;">
+
+
+          <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
+
+            <router-view/>
+
+          </el-card>
+
+
 
         </el-main>
 
       </el-container>
+
+      <el-footer style="position:fixed; bottom: 0; width: 100%; margin-bottom: 1px; padding: 0;"  >
+        <el-card >
+          <el-row  justify="center">
+            <el-space >
+              <el-link>关于我们</el-link>
+              <el-link>反馈信息</el-link>
+            </el-space>
+
+
+          </el-row>
+
+        </el-card>
+      </el-footer>
+
+
   </div>
 
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue"
+import {computed, onMounted, ref, watch} from "vue"
 import * as myFunc from "@/myFunc";
 import router from "@/router";
 import axios from "axios";
@@ -79,25 +77,37 @@ import qs from "qs";
 import {Base64} from "js-base64";
 import {ElMessage} from "element-plus";
 import {clearAccountCookies} from "@/myFunc";
-const cookies=myFunc.getCookies();
 
+//功能
+const cookies=myFunc.getCookies();
+//信息
 const username=ref<string>(cookies.get("username"));
 const password=ref<string>(cookies.get("password"));
 const nickname=ref<string>(cookies.get("nickname"));
 
+
+//菜单
 const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
+  console.log(key, keyPath);
   switch (key)
   {
-    case '5':
+    case 'main':
+      router.push('main');
+      break;
+    case 'editMyself':
+      router.push('editMyself');
+      break;
+    case 'quit':
       clearAccountCookies(cookies);
       router.push('guest');
       break;
-
   }
   //['1', '1-1-2']
 }
+watch((router.currentRoute),(value, oldValue, onCleanup)=>{
+  console.log(value,oldValue);
 
+})
 
 onMounted(()=>{
 
@@ -115,7 +125,6 @@ onMounted(()=>{
     axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/getNickname",
         qs.stringify({'info':data}), {headers:{'Login':'yoyo!'}}).then((res :any)=>{
       const callBack=new myFunc.R(res);
-      console.log(callBack)
       if (callBack.success())
       {
         const tmp = callBack.getMessage();
@@ -127,6 +136,7 @@ onMounted(()=>{
         }
         nickname.value=tmp;
         cookies.set("nickname",nickname.value,-1);
+        router.push('main');
 
       }
       else
