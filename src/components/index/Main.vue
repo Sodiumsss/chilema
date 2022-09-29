@@ -2,7 +2,7 @@
 
   <el-row justify="center">
               <span>
-                {{ nickname }}，{{getTime}}
+                {{ nickName }}，{{ getTime }}
               </span>
   </el-row>
   <el-carousel style="margin-top: 8px;" height="150px">
@@ -11,21 +11,69 @@
     </el-carousel-item>
   </el-carousel>
 
-  <el-row justify="center" style="margin-top: 15px;">
-    <el-space>
+  <el-row :gutter=20 justify="center" style="margin-top: 10px;">
+    <el-col v-for="(item) in topObjects" :span="8">
+      <el-card >
+        <el-row justify="center">
+          <el-space direction="vertical">
+            <p>{{item.name}}</p>
+            <div v-for="i in item.list">
+              <a>#{{i.id}}.{{i.name}}</a>
 
-    </el-space>
+            </div>
+
+          </el-space>
+
+
+
+        </el-row>
+      </el-card>
+
+    </el-col>
+
   </el-row>
 
+  <el-row justify="center">
+    <el-link type="primary">本周周报</el-link>
+  </el-row>
 </template>
 
 <script lang="ts" setup>
-import {computed, ref} from "vue"
+import {computed, onMounted, ref} from "vue"
 import * as myFunc from "@/myFunc";
 //功能
 const cookies=myFunc.getCookies();
 //信息
-const nickname=ref<string>(cookies.get("nickname"));
+const nickName=ref<string>(cookies.get("nickname"));
+
+const topObjects=ref<Array<myFunc.topObjects>>([]);
+
+onMounted(()=>{
+
+  if (myFunc.test)
+  {
+    console.log('test');
+    for (let i=0;i<3;i++)
+    {
+      let tmp =new myFunc.topObjects;
+
+      tmp.name=("排行榜"+i.toString());
+      for (let p=0;p<5;p++)
+      {
+        let tmp_ko :myFunc.topObject = new myFunc.topObject(i+p,((i+p)*5).toString());
+        tmp.list.push(tmp_ko);
+      }
+      console.log(tmp);
+      topObjects.value.push(tmp);
+
+    }
+
+    console.log(topObjects);
+  }
+
+
+})
+
 
 const getTime=computed(()=>{
   const hours = new Date().getHours();

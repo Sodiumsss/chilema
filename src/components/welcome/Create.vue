@@ -174,7 +174,7 @@ const Base64 = require('js-base64').Base64;
 //属性
 const username = ref<string>("");
 const password = ref<string>("");
-const nickname = ref<string>("同学");
+const nickName = ref<string>("同学");
 const schoolId = ref<string>("");
 const birthYear = ref<string>("");
 //偏好
@@ -305,7 +305,7 @@ function forwardStep()
         ElMessage.error({message:"请选择性别。",duration:2300});
         return;
       }
-      if (nickname.value==='')
+      if (nickName.value==='')
       {
         ElMessage.error({message:"我可没法称呼你为空白？",duration:2300});
         return;
@@ -370,7 +370,7 @@ function sendToServer()
   }).then(()=>
   {
     const par1=new myFunc.Favor(username.value,step1.value,step2.value,step3.value,step4.value);
-    const par2=new myFunc.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value,nickname.value);
+    const par2=new myFunc.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value, nickName.value);
     const info=JSON.stringify({
       'UserAccount':par2,
       'Favor':par1
@@ -387,7 +387,7 @@ function sendToServer()
       if (callBack.success())
       {
         ElMessage.success({message:callBack.getMessage(),duration:2300});
-        cookies.set("nickname",nickname.value,-1);
+        cookies.set("nickname", nickName.value,-1);
         router.push('login');
       }
       else

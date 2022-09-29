@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref, watch} from "vue"
+import {onMounted, ref, watch} from "vue"
 import * as myFunc from "@/myFunc";
 import router from "@/router";
 import axios from "axios";
@@ -83,7 +83,7 @@ const cookies=myFunc.getCookies();
 //信息
 const username=ref<string>(cookies.get("username"));
 const password=ref<string>(cookies.get("password"));
-const nickname=ref<string>(cookies.get("nickname"));
+const nickName=ref<string>(cookies.get("nickname"));
 
 
 //菜单
@@ -104,7 +104,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
   }
   //['1', '1-1-2']
 }
-watch((router.currentRoute),(value, oldValue, onCleanup)=>{
+watch((router.currentRoute),(value, oldValue)=>{
   console.log(value,oldValue);
 
 })
@@ -134,8 +134,8 @@ onMounted(()=>{
           myFunc.clearAccountCookies(cookies);
           router.push('guest');
         }
-        nickname.value=tmp;
-        cookies.set("nickname",nickname.value,-1);
+        nickName.value=tmp;
+        cookies.set("nickname", nickName.value,-1);
         router.push('main');
 
       }

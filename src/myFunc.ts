@@ -1,6 +1,6 @@
 import {ComponentInternalInstance, getCurrentInstance} from "vue"
 
-
+const test=true;
 const ip = "10.111.15.118";
 const port = "6324";
 function getThis() {
@@ -40,6 +40,33 @@ class comment
         this.like_num=like_num;
         this.up=up;
     }
+}
+
+
+class topObject{
+    id : number;
+    name : string;
+
+    constructor(id :number=-1,name :string= "null") {
+        this.id=id;
+        this.name=name;
+    }
+}
+
+class topObjects{
+    name : string;
+    list : Array<topObject>;
+
+    constructor() {
+        this.name="";
+        this.list = [];
+    }
+
+    getArray(index :any)
+    {
+        return this.list[index];
+    }
+
 }
 
 
@@ -141,5 +168,6 @@ class Favor
 }
 
 export {
-    ip,port,getThis,R,UserAccount,Favor,clearAccountCookies,getCookies
+    ip,port,getThis,R,UserAccount,Favor,clearAccountCookies,getCookies,topObject,test,topObjects
+
 }
