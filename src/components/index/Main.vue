@@ -65,9 +65,7 @@ onMounted(()=>{
       }
       console.log(tmp);
       topObjects.value.push(tmp);
-
     }
-
     console.log(topObjects);
   }
 

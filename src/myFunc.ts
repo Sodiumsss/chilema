@@ -61,12 +61,6 @@ class topObjects{
         this.name="";
         this.list = [];
     }
-
-    getArray(index :any)
-    {
-        return this.list[index];
-    }
-
 }
 
 
