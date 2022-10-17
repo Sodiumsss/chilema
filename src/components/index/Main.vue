@@ -2,7 +2,7 @@
 
   <el-row justify="center">
               <span>
-                {{ nickName }}，{{ getTime }}
+                {{ nickname }}，{{ getTime }}
               </span>
   </el-row>
   <el-carousel style="margin-top: 8px;" height="150px">
@@ -33,7 +33,7 @@
 
   </el-row>
 
-  <el-row justify="center">
+  <el-row justify="center" style="margin-top: 10px;">
     <el-link type="primary">本周周报</el-link>
   </el-row>
 </template>
@@ -44,8 +44,7 @@ import * as myFunc from "@/myFunc";
 //功能
 const cookies=myFunc.getCookies();
 //信息
-const nickName=ref<string>(cookies.get("nickname"));
-
+const nickname=ref<string>(cookies.get("nickname"));
 const topObjects=ref<Array<myFunc.topObjects>>([]);
 
 onMounted(()=>{
@@ -77,7 +76,7 @@ const getTime=computed(()=>{
   const hours = new Date().getHours();
   if (hours>=5 && hours<10){return '先随便看看今天的早餐推荐吧！';}
   if (hours>=10 && hours<=14) {return '先随便看看今天的午餐推荐吧！';}
-  if (hours <19) {return '先随便看看今天的午餐推荐吧！';}
+  if (hours <19) {return '先随便看看今天的晚餐推荐吧！';}
   return '夜深了，你在想明天要吃什么吗？'
 });
 </script>

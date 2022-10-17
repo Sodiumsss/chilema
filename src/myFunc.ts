@@ -1,7 +1,7 @@
 import {ComponentInternalInstance, getCurrentInstance} from "vue"
 
 const test=true;
-const ip = "10.111.15.118";
+const ip = "localhost";
 const port = "6324";
 function getThis() {
     const { appContext } = getCurrentInstance() as ComponentInternalInstance

@@ -3,7 +3,7 @@
       <el-container>
         <el-aside  style="margin-left: 10px; margin-top: 20px; width: 110px;">
           <el-scrollbar>
-            <el-menu  :unique-opened=true @select="handleSelect"  default-active="main">
+            <el-menu :unique-opened=true @select="handleSelect"  default-active="main">
               <el-menu-item index="main">
                 <template #title>首页</template>
               </el-menu-item>
@@ -23,7 +23,7 @@
               </el-menu-item>
 
               <el-menu-item index="editMyself">
-                <template #title>个人信息</template>
+                <template #title>账号管理</template>
               </el-menu-item>
 
               <el-menu-item index="quit">
@@ -32,21 +32,11 @@
             </el-menu>
           </el-scrollbar>
         </el-aside>
-
-
         <el-main style="padding-top: 20px;">
-
-
           <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
-
             <router-view/>
-
           </el-card>
-
-
-
         </el-main>
-
       </el-container>
 
       <el-footer style="position:fixed; bottom: 0; width: 100%; margin-bottom: 1px; padding: 0;"  >
@@ -56,8 +46,6 @@
               <el-link>关于我们</el-link>
               <el-link>反馈信息</el-link>
             </el-space>
-
-
           </el-row>
 
         </el-card>
@@ -83,7 +71,7 @@ const cookies=myFunc.getCookies();
 //信息
 const username=ref<string>(cookies.get("username"));
 const password=ref<string>(cookies.get("password"));
-const nickName=ref<string>(cookies.get("nickname"));
+const nickname=ref<string>(cookies.get("nickname"));
 
 
 //菜单
@@ -104,13 +92,16 @@ const handleSelect = (key: string, keyPath: string[]) => {
   }
   //['1', '1-1-2']
 }
-watch((router.currentRoute),(value, oldValue)=>{
-  console.log(value,oldValue);
+if (myFunc.test)
+{
+  watch((router.currentRoute),(value, oldValue)=>{
+    console.log(value,oldValue);
 
-})
+  })
+}
+
 
 onMounted(()=>{
-
 
   if (!(cookies.isKey("username") && cookies.isKey("password")))
   {
@@ -130,12 +121,12 @@ onMounted(()=>{
         const tmp = callBack.getMessage();
         if (tmp ==null)
         {
-          ElMessage.error({message:"连接出错，请重新登录！",duration:2500});
+          ElMessage.error({message:"数据出错，请重新登录！",duration:2500});
           myFunc.clearAccountCookies(cookies);
           router.push('guest');
         }
-        nickName.value=tmp;
-        cookies.set("nickname", nickName.value,-1);
+        nickname.value=tmp;
+        cookies.set("nickname", nickname.value,-1);
         router.push('main');
 
       }
