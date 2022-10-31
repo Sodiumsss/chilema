@@ -33,9 +33,6 @@
 
   </el-row>
 
-  <el-row justify="center" style="margin-top: 10px;">
-    <el-link type="primary">本周周报</el-link>
-  </el-row>
 </template>
 
 <script lang="ts" setup>

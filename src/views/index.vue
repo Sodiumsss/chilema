@@ -17,8 +17,13 @@
                 </el-menu-item-group>
               </el-sub-menu>
 
+
               <el-menu-item index="search">
                 <template #title>食品查询</template>
+              </el-menu-item>
+
+              <el-menu-item index="contribute">
+                <template #title>贡献</template>
               </el-menu-item>
 
               <el-menu-item index="editMyself">
@@ -28,6 +33,8 @@
               <el-menu-item index="quit">
                 <template #title>登出</template>
               </el-menu-item>
+
+
             </el-menu>
           </el-scrollbar>
         </el-aside>
@@ -42,8 +49,8 @@
         <el-card >
           <el-row  justify="center">
             <el-space>
-              <el-link>关于我们</el-link>
-              <el-link>反馈信息</el-link>
+              <el-link @click="aboutUs">关于我们</el-link>
+              <el-link @click="userReport">反馈信息</el-link>
             </el-space>
           </el-row>
 
@@ -73,6 +80,14 @@ const password=ref<string>(cookies.get("password"));
 const nickname=ref<string>(cookies.get("nickname"));
 
 
+const aboutUs = ()=>{
+  alert(1111);
+
+}
+const userReport = ()=>{
+  alert(1111);
+}
+
 //菜单
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
@@ -92,8 +107,9 @@ const handleSelect = (key: string, keyPath: string[]) => {
     case 'search':
       router.push('search');
       break;
-
-
+    case 'contribute':
+      router.push('contribute');
+      break;
   }
 }
 if (myFunc.test)

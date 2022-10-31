@@ -125,8 +125,10 @@ class UserAccount
     schoolId :number;
     birthYear :number;
     nickname :string;
+    credit :number;
 
-    constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1,nickname :string="")
+    constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1,nickname :string=""
+                ,credit:number=0)
     {
         this.id=null;
         this.username=username;
@@ -134,6 +136,7 @@ class UserAccount
         this.schoolId=schoolId;
         this.birthYear=birthYear;
         this.nickname=nickname;
+        this.credit=credit;
     }
 
 

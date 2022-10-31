@@ -18,6 +18,8 @@
             <el-radio label='1'>一食堂(祥园)</el-radio>
             <el-radio label='2'>二食堂</el-radio>
             <el-radio label='3'>三食堂(荷园)</el-radio>
+            <el-radio label='4'>其它</el-radio>
+
           </el-radio-group>
         </el-space>
       </el-row>
