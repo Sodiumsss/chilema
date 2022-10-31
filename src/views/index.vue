@@ -17,9 +17,8 @@
                 </el-menu-item-group>
               </el-sub-menu>
 
-              <el-menu-item index="3">
+              <el-menu-item index="search">
                 <template #title>食品查询</template>
-
               </el-menu-item>
 
               <el-menu-item index="editMyself">
@@ -42,7 +41,7 @@
       <el-footer style="position:fixed; bottom: 0; width: 100%; margin-bottom: 1px; padding: 0;"  >
         <el-card >
           <el-row  justify="center">
-            <el-space >
+            <el-space>
               <el-link>关于我们</el-link>
               <el-link>反馈信息</el-link>
             </el-space>
@@ -89,8 +88,13 @@ const handleSelect = (key: string, keyPath: string[]) => {
       clearAccountCookies(cookies);
       router.push('guest');
       break;
+
+    case 'search':
+      router.push('search');
+      break;
+
+
   }
-  //['1', '1-1-2']
 }
 if (myFunc.test)
 {
