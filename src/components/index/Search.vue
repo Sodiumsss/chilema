@@ -58,7 +58,7 @@ import {Search} from '@element-plus/icons-vue'
 const nowTab=ref<string>('1');
 
 //按名称
-const foodName=ref<string>('1');
+const foodName=ref<string>('');
 
 //
 
