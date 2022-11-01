@@ -1,6 +1,6 @@
 <template>
 
-  <el-row  justify="center">
+  <el-row justify="center">
     <el-space direction="vertical">
       <template v-if="isShow===1">
         账号<el-input disabled v-model="username"></el-input>

@@ -3,28 +3,36 @@
       <el-container>
         <el-aside  style="margin-left: 10px; margin-top: 20px; width: 110px;">
           <el-scrollbar>
-            <el-menu :unique-opened=true @select="handleSelect"  default-active="main">
-              <el-menu-item index="main">
+            <el-menu :unique-opened=true @select="handleSelect"  default-active="hello">
+              <el-menu-item index="hello">
                 <template #title>首页</template>
               </el-menu-item>
 
               <el-sub-menu index="2">
-                <template #title>推荐</template>
-                <el-menu-item-group>
-                  <template #title>G1</template>
-                  <el-menu-item  index="2-1-1">1</el-menu-item>
-                  <el-menu-item index="2-1-2">2</el-menu-item>
-                </el-menu-item-group>
+                <template #title>吃！</template>
+                <el-menu-item index="search">
+                  <template #title>食品查询</template>
+                </el-menu-item>
+                <el-menu-item index="suggest">
+                  <template #title>获取推荐</template>
+                </el-menu-item>
+                <el-menu-item index="contribute">
+                  <template #title>贡献</template>
+                </el-menu-item>
+
+<!--                <el-menu-item-group>-->
+<!--                  <template #title>G1</template>-->
+<!--                  <el-menu-item  index="2-1-1">1</el-menu-item>-->
+<!--                  <el-menu-item index="2-1-2">2</el-menu-item>-->
+<!--                </el-menu-item-group>-->
               </el-sub-menu>
 
 
-              <el-menu-item index="search">
-                <template #title>食品查询</template>
+
+              <el-menu-item index="hollow">
+                <template #title>树洞</template>
               </el-menu-item>
 
-              <el-menu-item index="contribute">
-                <template #title>贡献</template>
-              </el-menu-item>
 
               <el-menu-item index="editMyself">
                 <template #title>账号管理</template>
@@ -53,7 +61,6 @@
               <el-link @click="userReport">反馈信息</el-link>
             </el-space>
           </el-row>
-
         </el-card>
       </el-footer>
 
@@ -79,7 +86,6 @@ const username=ref<string>(cookies.get("username"));
 const password=ref<string>(cookies.get("password"));
 const nickname=ref<string>(cookies.get("nickname"));
 
-
 const aboutUs = ()=>{
   alert(1111);
 
@@ -93,8 +99,8 @@ const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
   switch (key)
   {
-    case 'main':
-      router.push('main');
+    case 'hello':
+      router.push('hello');
       break;
     case 'editMyself':
       router.push('editMyself');
@@ -107,9 +113,18 @@ const handleSelect = (key: string, keyPath: string[]) => {
     case 'search':
       router.push('search');
       break;
+
+    case 'hollow':
+      router.push('hollow');
+      break;
     case 'contribute':
       router.push('contribute');
       break;
+
+    case 'suggest':
+      router.push('suggest');
+      break;
+
   }
 }
 if (myFunc.test)
@@ -147,7 +162,7 @@ onMounted(()=>{
         }
         nickname.value=tmp;
         cookies.set("nickname", nickname.value,-1);
-        router.push('main');
+        router.push('hello');
 
       }
       else

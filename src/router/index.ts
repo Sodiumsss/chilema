@@ -38,9 +38,9 @@ const routes: Array<RouteRecordRaw> = [
         children:
         [
             {
-                path: '/main',
-                name: 'main',
-                component: () => import('../components/index/Main.vue')
+                path: '/hello',
+                name: 'hello',
+                component: () => import('../components/index/Hello.vue')
             },
             {
                 path: '/editMyself',
@@ -57,6 +57,19 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'contribute',
                 component: () => import('../components/index/Contribute.vue')
             },
+            {
+                path: '/hollow',
+                name: 'hollow',
+                component: () => import('../components/index/Hollow.vue')
+            },
+
+            {
+                path: '/suggest',
+                name: 'suggest',
+                component: () => import('../components/index/Suggest.vue')
+            },
+
+
         ]
     },
 
