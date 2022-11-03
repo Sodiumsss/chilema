@@ -31,52 +31,48 @@
 import {onMounted, ref} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
-import axios from "axios";
-import qs from "qs";
-import * as myFunc from '@/myFunc'
-import {Base64} from "js-base64";
-
+import * as func from "@/Set"
 const md5 = require('js-md5');
 
 
 const username=ref<string>("");
 const password=ref<string>("");
 const loading=ref<boolean>(false);
-let cookies:any=null;
+const initCookie = func.initCookie();
+
 onMounted(()=>{
-   cookies=myFunc.getCookies()
+  func.clearCookies(initCookie);
 })
 
 function login()
 {
   if (username.value==="" || password.value==="")
   {
-    ElMessage.error({message:"请将账号密码填写完整！",duration:2300});
+    ElMessage.error({message:"请将账号密码填写完整！",duration:2000});
     return;
   }
   loading.value=true;
-  const info=JSON.stringify({'username':username.value,'password':md5(password.value)});
-  const data=Base64.encode (info);
-  axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/login", qs.stringify({'info':data}),{headers:{'Login':'yoyo!'}})
-      .then((res :any) =>{
-        const callBack=new myFunc.R(res);
-        if (callBack.success())
-        {
-          ElMessage.success({message:callBack.getMessage(),duration:2300});
-          cookies.set("username",username.value,'30d');
-          cookies.set("password",md5(password.value),'30d');
-          cookies.set("already",1,-1);
+  const user = new func.User(username.value,md5(password.value));
+  user.login().then((res)=>{
+    const callBack=func.getResult(res);
+    if (callBack.success())
+    {
 
-          router.push('index');
-        }
-        else
-        {
-          ElMessage.error({message:callBack.getMessage(),duration:2500});
-        }
-      })
-      .catch(()=>{
-        ElMessage.error({message:"连接出错！",duration:2500});
-      })
+      user.nickname=callBack.message.toString();
+      user.setCookies(initCookie);
+      if (!func.isAlready(initCookie))
+      {
+        func.setAlready(initCookie);
+      }
+      router.push('index');
+    }
+    else
+    {
+      ElMessage.error({message:"登录失败！",duration:2000});
+
+    }
+  }).catch(()=>{
+    ElMessage.error({message:"网络连接出错！",duration:2000});})
   loading.value=false;
 }
 function forgetPassword() {router.push("forgetPW");}

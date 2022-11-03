@@ -47,13 +47,8 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import router from "@/router";
-import {ElMessage} from "element-plus";
-import axios from "axios";
-import qs from "qs";
-import * as myFunc from '@/myFunc'
-import {Base64} from "js-base64";
+import {ref} from "vue";
+
 import {Search} from '@element-plus/icons-vue'
 const nowTab=ref<string>('1');
 

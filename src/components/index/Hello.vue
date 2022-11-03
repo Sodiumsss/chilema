@@ -2,7 +2,7 @@
 
   <el-row justify="center">
               <span>
-                {{ nickname }}，{{ getTime }}
+                {{ user.nickname }}，{{ getTime }}
               </span>
   </el-row>
   <el-carousel style="margin-top: 8px;" height="150px">
@@ -37,32 +37,49 @@
 
 <script lang="ts" setup>
 import {computed, onMounted, ref} from "vue"
-import * as myFunc from "@/myFunc";
+import * as func from "@/Set"
+import {ElMessage} from "element-plus";
+import router from "@/router";
 //功能
-const cookies=myFunc.getCookies();
+
+const initCookie=func.initCookie();
+const user = ref<func.User>(new func.User());
 //信息
-const nickname=ref<string>(cookies.get("nickname"));
-const topObjects=ref<Array<myFunc.topObjects>>([]);
+onMounted(()=>{
+  const cookiesState=func.existCookies(initCookie);
+  if (cookiesState===1)
+  {
+    user.value.loadByCookies(initCookie);
+  }
+  else
+  {
+    ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
+    func.clearCookies(initCookie);
+    router.push('guest');
+  }
+
+})
+
+
+const topObjects=ref<Array<func.topObjects>>([]);
 
 onMounted(()=>{
 
-  if (myFunc.test)
+  if (func.test)
   {
-    console.log('test');
+    console.log('TestMode Open');
     for (let i=0;i<3;i++)
     {
-      let tmp =new myFunc.topObjects;
+      let tmp =new func.topObjects;
 
       tmp.name=("排行榜"+i.toString());
       for (let p=0;p<5;p++)
       {
-        let tmp_ko :myFunc.topObject = new myFunc.topObject(i+p,((i+p)*5).toString());
+        let tmp_ko :func.topObject = new func.topObject(i+p,((i+p)*5).toString());
         tmp.list.push(tmp_ko);
       }
-      console.log(tmp);
       topObjects.value.push(tmp);
     }
-    console.log(topObjects);
   }
 
 

@@ -43,9 +43,9 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../components/index/Hello.vue')
             },
             {
-                path: '/editMyself',
-                name: 'editMyself',
-                component: () => import('../components/index/EditMyself.vue')
+                path: '/profile',
+                name: 'profile',
+                component: () => import('../components/index/Profile.vue')
             },
             {
                 path: '/search',

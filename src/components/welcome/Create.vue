@@ -13,29 +13,27 @@
            <p>我们提供的选项可能没有到达你的预期，但是没关系，我们正在改进！</p>
 
           </el-alert>
-          <!--Step1-->
+          <!--taste-->
           <div v-if="nowStep===0">
             <el-row justify="center"><p>你喜欢/讨厌什么？</p></el-row>
-            酸：<el-slider v-model="step1[0]" :step="25" :format-tooltip="tooltip1" show-stops></el-slider>
-            甜：<el-slider v-model="step1[1]" :step="25" :format-tooltip="tooltip2" show-stops></el-slider>
-            麻：<el-slider v-model="step1[2]" :step="25" :format-tooltip="tooltip3" show-stops></el-slider>
-            辣：<el-slider v-model="step1[3]" :step="25" :format-tooltip="tooltip4" show-stops></el-slider>
-
-
+            酸：<el-slider v-model="taste[0]" :step="25" :format-tooltip="tooltip1" show-stops></el-slider>
+            甜：<el-slider v-model="taste[1]" :step="25" :format-tooltip="tooltip2" show-stops></el-slider>
+            麻：<el-slider v-model="taste[2]" :step="25" :format-tooltip="tooltip3" show-stops></el-slider>
+            辣：<el-slider v-model="taste[3]" :step="25" :format-tooltip="tooltip4" show-stops></el-slider>
           </div>
-          <!--Step2-->
+          <!--preference-->
           <div v-if="nowStep===1">
             <el-row justify="center">
               <el-space direction="vertical">
                 <a>油</a>
-                <el-radio-group v-model="step2[0]">
+                <el-radio-group v-model="preference[0]">
                   <el-radio label='1'>偏清淡</el-radio>
                   <el-radio label='2'>正常</el-radio>
                   <el-radio label='3'>偏油</el-radio>
                 </el-radio-group>
 
                 <a>咸</a>
-                <el-radio-group v-model="step2[1]">
+                <el-radio-group v-model="preference[1]">
                   <el-radio label='1'>偏清淡</el-radio>
                   <el-radio label='2'>正常</el-radio>
                   <el-radio label='3'>偏咸</el-radio>
@@ -46,13 +44,13 @@
             </el-row>
 
           </div>
-          <!--Step3-->
+          <!--meals-->
           <div v-if="nowStep===2">
             <el-row justify="center">
               <el-space direction="vertical">
-                <a>你吃早餐吗？<el-switch v-model="step3[0]"/></a>
-                <div v-if="step3[0]">
-                  <el-radio-group v-model="step3_radio[0]">
+                <a>你吃早餐吗？<el-switch v-model="mealsSwitch[0]"/></a>
+                <div v-if="mealsSwitch[0]">
+                  <el-radio-group v-model="meals[0]">
                     <el-radio label='1'>较少</el-radio>
                     <el-radio label='2'>正常</el-radio>
                     <el-radio label='3'>较多</el-radio>
@@ -65,9 +63,9 @@
                 </div>
 
 
-                <a>你吃午餐吗？<el-switch v-model="step3[1]"/></a>
-                <div v-if="step3[1]">
-                  <el-radio-group v-model="step3_radio[1]">
+                <a>你吃午餐吗？<el-switch v-model="mealsSwitch[1]"/></a>
+                <div v-if="mealsSwitch[1]">
+                  <el-radio-group v-model="meals[1]">
                     <el-radio label='1'>较少</el-radio>
                     <el-radio label='2'>正常</el-radio>
                     <el-radio label='3'>较多</el-radio>
@@ -77,9 +75,9 @@
                   </el-tooltip>
                 </div>
 
-                <a>你吃晚餐吗？<el-switch v-model="step3[2]"/></a>
-                <div v-if="step3[2]">
-                  <el-radio-group v-model="step3_radio[2]">
+                <a>你吃晚餐吗？<el-switch v-model="mealsSwitch[2]"/></a>
+                <div v-if="mealsSwitch[2]">
+                  <el-radio-group v-model="meals[2]">
                     <el-radio label='1'>较少</el-radio>
                     <el-radio label='2'>正常</el-radio>
                     <el-radio label='3'>较多</el-radio>
@@ -94,16 +92,16 @@
 
 
           </div>
-          <!--Step4-->
+
+
+          <!--information-->
           <div v-if="nowStep===3">
             <el-form>
             <el-row justify="center">
               <el-space direction="vertical">
 
-
-
                 <a>性别</a>
-                <el-radio-group v-model="step4[0]">
+                <el-radio-group v-model="sex">
                   <el-radio label='1'>男</el-radio>
                   <el-radio label='2'>女</el-radio>
                 </el-radio-group>
@@ -138,21 +136,16 @@
             </el-row>
             </el-form>
           </div>
+
+
           <!--按钮-->
-
-
           <el-row v-if="nowStep<=3" justify="center">
             <el-space>
-              <el-button  @click="backPage">返回首页</el-button>
-
-              <el-button v-if="nowStep>0" @click="backStep">回到上一步</el-button>
-
-              <el-button v-if="nowStep<=2" @click="forwardStep"><a style="font-weight: bold">我选好了</a></el-button>
+              <el-button  @click="backPage">放弃创建</el-button>
+              <el-button v-if="nowStep>0" @click="backStep">上一步</el-button>
+              <el-button v-if="nowStep<=2" @click="forwardStep"><a style="font-weight: bold">下一步</a></el-button>
               <el-button v-if="nowStep===3" :disabled="createButtonLock" @click="forwardStep"><a style="font-weight: bold" >创建</a></el-button>
-
-
             </el-space>
-
           </el-row>
         </el-card>
       </el-main>
@@ -160,17 +153,12 @@
 </template>
 
 
-
 <script lang="ts" setup>
 import {ElMessage, ElMessageBox} from "element-plus";
-import axios from "axios";
-import * as myFunc from '../../myFunc'
+import * as func from "@/Set"
 import {onMounted, ref, watch} from "vue";
 import router from "@/router";
-import qs from 'qs'
 const md5 =require('js-md5');
-//导入
-const Base64 = require('js-base64').Base64;
 //属性
 const username = ref<string>("");
 const password = ref<string>("");
@@ -178,16 +166,15 @@ const nickname = ref<string>("同学");
 const schoolId = ref<string>("");
 const birthYear = ref<string>("");
 //偏好
-const step1=ref([0,0,0,0]);
-const step2=ref([0,0,0]);
-const step3=ref([false,false,false]);
-const step3_radio=ref([0,0,0]);
-const step4=ref([0,0,0]);
+const taste=ref([0,0,0,0]);
+const preference=ref([0,0]);
+const mealsSwitch=ref([false,false,false]);
+const meals=ref([0,0,0]);
+const sex=ref(0);
 //控制
 const nowStep=ref<number>(0);
 const accountCrash=ref<boolean>(false);
 const loading=ref<boolean>(false);
-const cookies=myFunc.getCookies();
 const createButtonLock=ref<boolean>(false);
 const usernameInfoState=ref<boolean>(false);
 const usernameInfo=ref<string>("");
@@ -199,7 +186,6 @@ const passwordInfoState=ref<boolean>(false);
 onMounted(()=> {document.title='请让我了解一下！';})
 //监听密码
 watch(password,(N)=>{
-  console.log(N);
   if (password.value==="")
   {
     createButtonLock.value=true;
@@ -230,35 +216,30 @@ watch(username,()=>{
 function usernameFocusout()
 {
   if (username.value===""){return;}
-
   createButtonLock.value=true;
-  const info =new myFunc.UserAccount(username.value);
-  const data = Base64.encode(JSON.stringify(info));
-  axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/verifyUsername", qs.stringify({'info':data})).then((res :any)=>{
-    const callBack = new myFunc.R(res);
-    usernameInfoState.value=true;
-    if (callBack.success())
-    {
-      createButtonLock.value=false;
-      usernameInfo.value="可以使用"
-      usernameInfoColor.value="green";
-      usernameInfoIcon.value=true;
+  func.verifyUsername(username.value).then((res)=>{
+    const callBack=func.getResult(res);
+      if (callBack.success())
+      {
+        createButtonLock.value=false;
+        usernameInfo.value="可以使用"
+        usernameInfoColor.value="green";
+        usernameInfoIcon.value=true;
+      }
+      else
+      {
+        usernameInfo.value="账号重复"
+        usernameInfoColor.value="red";
+        usernameInfoIcon.value=false;
 
-    }
-    else
-    {
-      usernameInfo.value="账号重复"
+      }
+  }).catch(()=>{
+      usernameInfo.value="网络错误"
       usernameInfoColor.value="red";
       usernameInfoIcon.value=false;
+  });
+  usernameInfoState.value=true;
 
-    }
-
-  }).catch(()=>{
-    usernameInfoState.value=true;
-    usernameInfo.value="网络错误"
-    usernameInfoColor.value="red";
-    usernameInfoIcon.value=false;
-  })
 }
 function backPage()
 {
@@ -275,23 +256,23 @@ function forwardStep()
   switch (nowStep.value)
   {
     case 1:
-      if (step2.value[0]===0 || step2.value[1]===0)
+      if (preference.value[0]===0 || preference.value[1]===0)
       {
         ElMessage.error({message:"请填写完整！",duration:2300});
         return;
       }
       break;
     case 2:
-      if(step3.value[0]===false && step3.value[1]===false && step3.value[1]===false)
+      if(mealsSwitch.value[0]===false && mealsSwitch.value[1]===false && mealsSwitch.value[1]===false)
       {
         ElMessage.error({message:"钢铁是怎样炼成的？",duration:2300});
         return;
       }
-      for (let i =0;i<step3.value.length;i++)
+      for (let i =0;i<mealsSwitch.value.length;i++)
       {
-        if (step3.value[i])
+        if (mealsSwitch.value[i])
         {
-          if (step3_radio.value[i]===0)
+          if (meals.value[i]===0)
           {
             ElMessage.error({message:"请选择选项。",duration:2300});
             return;
@@ -300,7 +281,7 @@ function forwardStep()
       }
       break;
     case 3:
-      if (step4.value[0]===0)
+      if (sex.value===0)
       {
         ElMessage.error({message:"请选择性别。",duration:2300});
         return;
@@ -345,64 +326,46 @@ function forwardStep()
       }
       break;
   }
-
   nowStep.value++;
   if(nowStep.value===4)
   {
-    nowStep.value=3;
     usernameFocusout();
     if (usernameInfoIcon.value===true)
     {
       sendToServer();
+      backStep();
     }
   }
 }
 
 function sendToServer()
 {
-  ElMessageBox.confirm('我们将会把你刚才填写的信息上传至服务器，并且使用Cookies在你的本地存储一些数据。' +
-      '请放心，我们不会对你的信息通过任何方式转让。' +
-      '并且，你刚才填写的信息没有任何敏感内容。我们将对大家上传的信息进行大数据分析，然后把推荐结果反馈给你。','警告',{
+  ElMessageBox.confirm('我们将会把你刚才填写的信息上传至服务器，并且使用Cookies在你的本地存储一些数据。','警告',{
     confirmButtonText:'同意',
     cancelButtonText:'不同意',
     type:'warning',
     center:true
   }).then(()=>
   {
-    const par1=new myFunc.Favor(username.value,step1.value,step2.value,step3.value,step4.value);
-    const par2=new myFunc.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value, nickname.value);
-    const info=JSON.stringify({
-      'UserAccount':par2,
-      'Favor':par1
-    });
-
-    const data=Base64.encode (info);
+    const favor = new func.Favor(taste.value,preference.value,meals.value)
+    const user = new func.User(username.value,md5(password.value),schoolId.value,birthYear.value
+        , nickname.value,0,false,sex.value,favor);
     loading.value=true;
-    console.log(qs.stringify({'info':data}))
-
-    axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/create", qs.stringify({'info':data}),{headers:{'Create':'yoyo!'}})
-        .then((res: any)=>
-    {
-      const callBack=new myFunc.R(res);
+    func.createWithFavor(user,favor).then((res=>{
+      const callBack=func.getResult(res);
       if (callBack.success())
       {
-        ElMessage.success({message:callBack.getMessage(),duration:2300});
-        cookies.set("nickname", nickname.value,-1);
-        router.push('login');
+        ElMessage.success({message:"注册成功！",duration:2000});
+        router.push('guest');
       }
       else
       {
-          ElMessage.error({message:callBack.getMessage(),duration:2500});
-      }
+        ElMessage.error({message:"注册失败，请检测所填写的内容！",duration:2000});
+      }})
+    ).catch(()=>{
+      ElMessage.error({message:"网络连接出错！",duration:2000});
     })
-        .catch(()=>
-        {
-            ElMessage.error({message:"连接出错！",duration:2500});
-        }
-    )
     loading.value=false;
-
-
   })
 }
 
@@ -472,7 +435,3 @@ function tooltip4(a: number)
 }
 
 </script>
-
-<style scoped>
-
-</style>

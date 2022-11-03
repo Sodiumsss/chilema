@@ -34,7 +34,7 @@
               </el-menu-item>
 
 
-              <el-menu-item index="editMyself">
+              <el-menu-item index="profile">
                 <template #title>账号管理</template>
               </el-menu-item>
 
@@ -70,21 +70,51 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref, watch} from "vue"
-import * as myFunc from "@/myFunc";
+import {onMounted, ref} from "vue"
 import router from "@/router";
-import axios from "axios";
-import qs from "qs";
-import {Base64} from "js-base64";
+import * as func from "@/Set"
 import {ElMessage} from "element-plus";
-import {clearAccountCookies} from "@/myFunc";
-
 //功能
-const cookies=myFunc.getCookies();
+const initCookie=func.initCookie();
 //信息
-const username=ref<string>(cookies.get("username"));
-const password=ref<string>(cookies.get("password"));
-const nickname=ref<string>(cookies.get("nickname"));
+const user = ref<func.User>(new func.User());
+onMounted(()=>{
+  const cookiesState=func.existCookies(initCookie);
+  if (cookiesState===-1)
+  {
+    ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
+    func.clearCookies(initCookie);
+    router.push('guest');
+  }
+  else if (cookiesState===1)
+  {
+    func.validateCookies(initCookie).then((res)=>{
+      const callBack=func.getResult(res);
+      if (callBack.success())
+      {
+        user.value.loadByCookies(initCookie);
+        router.push('hello');
+      }
+      else
+      {
+        ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
+        func.clearCookies(initCookie);
+        router.push('guest');
+      }
+    }).catch(()=>{
+      ElMessage.error({message:"网络连接出错，请重新登录！",duration:2000});
+      func.clearCookies(initCookie);
+      router.push('guest');});
+  }
+  else
+  {
+    ElMessage.error({message:"发生未知错误，请更换浏览器！",duration:2000});
+    func.clearCookies(initCookie);
+    router.push('guest');
+  }
+}
+
+)
 
 const aboutUs = ()=>{
   alert(1111);
@@ -102,11 +132,11 @@ const handleSelect = (key: string, keyPath: string[]) => {
     case 'hello':
       router.push('hello');
       break;
-    case 'editMyself':
-      router.push('editMyself');
+    case 'profile':
+      router.push('profile');
       break;
     case 'quit':
-      clearAccountCookies(cookies);
+      func.clearCookies(initCookie);
       router.push('guest');
       break;
 
@@ -127,57 +157,10 @@ const handleSelect = (key: string, keyPath: string[]) => {
 
   }
 }
-if (myFunc.test)
-{
-  watch((router.currentRoute),(value, oldValue)=>{
-    console.log(value,oldValue);
-
-  })
-}
 
 
-onMounted(()=>{
 
-  if (!(cookies.isKey("username") && cookies.isKey("password")))
-  {
-    myFunc.clearAccountCookies(cookies);
-    router.push('guest');
 
-  }
-  else
-  {
-    const info=JSON.stringify(new myFunc.UserAccount(username.value,password.value));
-    const data=Base64.encode (info);
-    axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/getNickname",
-        qs.stringify({'info':data}), {headers:{'Login':'yoyo!'}}).then((res :any)=>{
-      const callBack=new myFunc.R(res);
-      if (callBack.success())
-      {
-        const tmp = callBack.getMessage();
-        if (tmp ==null)
-        {
-          ElMessage.error({message:"数据出错，请重新登录！",duration:2500});
-          myFunc.clearAccountCookies(cookies);
-          router.push('guest');
-        }
-        nickname.value=tmp;
-        cookies.set("nickname", nickname.value,-1);
-        router.push('hello');
-
-      }
-      else
-      {
-        ElMessage.error({message:callBack.getMessage(),duration:2500});
-        myFunc.clearAccountCookies(cookies);
-        router.push('guest');
-      }
-    }).catch(()=>{
-      ElMessage.error({message:"连接出错，请重新登录！",duration:2500});
-      myFunc.clearAccountCookies(cookies);
-      router.push('guest');
-    });
-  }
-})
 
 </script>
 

@@ -3,21 +3,7 @@
     <router-view/>
   </div>
 </template>
-<script lang="ts" setup>
-import {onMounted} from "vue"
-import * as myFunc from "@/myFunc";
-const cookies = myFunc.getCookies();
-import router from "@/router";
 
-onMounted(()=>{
-  if (!(cookies.isKey("username") && cookies.isKey("password")))
-  {
-    myFunc.clearAccountCookies(cookies);
-  }
-  router.push('guest');
-
-})
-</script>
 
 <style scoped>
 .main{

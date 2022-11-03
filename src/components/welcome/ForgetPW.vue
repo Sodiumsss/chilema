@@ -30,10 +30,8 @@ import {ref, watch} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import md5 from "js-md5";
-import {Base64} from "js-base64";
-import axios from "axios";
-import * as myFunc from "@/myFunc";
-import qs from "qs";
+import * as func from "@/Set";
+
 
 const username=ref<string>("");
 const schoolId=ref<string>("");
@@ -43,6 +41,7 @@ const newPassword=ref<string>("");
 
 const loading=ref<boolean>(false);
 const state=ref<boolean>(false);
+const initCookie=func.initCookie();
 
 watch(newPassword,()=>{
   state.value = newPassword.value != password.value;
@@ -52,26 +51,29 @@ watch(newPassword,()=>{
 
 function submit()
 {
-  loading.value=true;
     if (username.value==="" || schoolId.value==="" || birthYear.value==="")
     {
       ElMessage.error({message:"请填写完整！",duration:2300});
-      loading.value=false;
       return;
     }
-    const info=JSON.stringify(new myFunc.UserAccount(username.value,md5(password.value),schoolId.value,birthYear.value));
-    const data=Base64.encode (info);
-    axios.post("http://"+myFunc.ip+":"+myFunc.port+"/api/user/forgetPW",
-        qs.stringify({'info':data}),{headers:{'forgetPW':'yoyo!'}})
-        .then((res :any)=>{
-          const callBack=new myFunc.R(res);
-          if (callBack.success())
-          {
-            ElMessage.success({message:callBack.getMessage(),duration:2300});
-            router.push('login');
-          }
-          else {ElMessage.error({message:callBack.getMessage(),duration:2500});}})
-        .catch(()=>{ElMessage.error({message:"连接出错！",duration:2500});});
+  loading.value=true;
+  const user = new func.User(username.value,md5(password.value),schoolId.value,birthYear.value);
+  user.forgetPW().then((res)=>{
+    const callBack=func.getResult(res);
+    if (callBack.success())
+    {
+      ElMessage.success({message:callBack.getMessage(),duration:2000});
+      func.clearCookies(initCookie);
+      router.push('login');
+    }
+    else
+    {
+      ElMessage.error({message:callBack.getMessage(),duration:2000});
+
+    }
+  }).catch(()=>{ElMessage.error({message:"网络连接出错！",duration:2000});})
+
+
   loading.value=false;
 
 }
