@@ -4,7 +4,6 @@
       <el-container>
         <el-aside width="200px">
           <el-card class="aside-card">
-
             <el-row justify="center">
               <el-space direction="vertical">
                 <p v-text="user.nickname"/>
@@ -16,15 +15,29 @@
               </el-space>
             </el-row>
 
-
-
           </el-card>
 
         </el-aside>
         <el-main>
 
           <el-card class="main-card">
-            aa
+            <el-tabs v-model="activeName">
+              <el-tab-pane label="最新" name="first">
+                <el-card v-for="i in hollowList">
+                  <p>{{i.title}}</p>
+                  <br/>
+                  <p>{{i.text}}</p>
+
+
+                </el-card>
+
+
+                <el-button @click="post">post</el-button>
+
+              </el-tab-pane>
+              <el-tab-pane label="最热" name="second">Config</el-tab-pane>
+
+            </el-tabs>
           </el-card>
 
         </el-main>
@@ -43,32 +56,45 @@ import router from "@/router";
 
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
-
-onMounted(()=>
-    {
+const hollowList=ref<func.HollowThread[]>([]);
+const activeName=ref<string>("first");
+onMounted(()=> {
       func.userInit(user.value,initCookie).then(r=>{
         user.value=r as func.User;
-        if (!user.value.hollow)
+        if (user.value.hollow===0)
         {
           ElMessage.error({message:"你还没有开通树洞！",duration:2000});
           router.push('index');
+        }
+        else
+        {
+          func.getHollow(1).then(r=>{
+            const callBack=func.getResult(r);
+            hollowList.value=callBack.getData() as func.HollowThread[];
+            console.log(hollowList.value);
+          })
         }
       });
 
 
 
 
-    }
+    });
+const post = ()=>{
+  let me = new func.HollowThread(null,user.value.id,user.value.nickname,"付服务费",0,0,0,
+  null,"淑女失败睡吧睡吧想是多少的",null);
+  me.post().then(r=>{
+    console.log(r);
+  })
 
+}
 
-
-)
 
 
 </script>
 
 <style scoped>
-.el-container { height: 100%; background-color: bisque }
+.el-container { height: 100%; background-color: #63BF8E }
 .el-header, .el-footer {  text-align: center; line-height: 60px; }
 .el-aside { margin-top: 20px;  }
 .el-main {  }

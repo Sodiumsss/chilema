@@ -22,12 +22,12 @@
                   </el-menu-item>
                 </el-sub-menu>
 
-                <template v-if="user.hollow">
+                <template v-if="user.hollow>0">
                   <el-menu-item index="hollow">
                     <template #title>进入树洞</template>
                   </el-menu-item>
                 </template>
-                <template v-if="!user.hollow">
+                <template v-if="user.hollow===0">
                   <el-menu-item index="joinHollow">
                     <template #title>开通树洞</template>
                   </el-menu-item>
