@@ -349,7 +349,7 @@ function sendToServer()
   {
     const favor = new func.Favor(taste.value,preference.value,meals.value)
     const user = new func.User(username.value,md5(password.value),schoolId.value,birthYear.value
-        , nickname.value,0,false,sex.value,favor);
+        , nickname.value,0,0,sex.value,favor);
     loading.value=true;
     func.create(user,favor).then((res=>{
       const callBack=func.getResult(res);
