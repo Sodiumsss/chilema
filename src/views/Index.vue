@@ -1,4 +1,6 @@
 <template>
+  <el-skeleton animated :loading="loading">
+    <template #default>
       <el-container class="big-container">
         <el-container>
           <el-aside>
@@ -50,18 +52,17 @@
         </el-container>
 
         <el-footer>
-            <el-row justify="center">
-              <el-space>
-                <el-link @click="aboutUs">关于我们</el-link>
-                <el-link @click="userReport">反馈信息</el-link>
-              </el-space>
-            </el-row>
+          <el-row justify="center">
+            <el-space>
+              <el-link @click="aboutUs">关于我们</el-link>
+              <el-link @click="userReport">反馈信息</el-link>
+            </el-space>
+          </el-row>
         </el-footer>
 
       </el-container>
-
-
-
+    </template>
+  </el-skeleton>
 </template>
 
 <script lang="ts" setup>
@@ -69,13 +70,14 @@ import {onMounted, ref} from "vue"
 import router from "@/router";
 import * as func from "@/Set"
 import {ElMessage} from "element-plus";
-//功能
 const initCookie=func.initCookie();
-//信息
 const user = ref<func.User>(new func.User());
+const loading =ref<boolean>(true);
 onMounted(()=>{
   func.userInit(user.value,initCookie).then((r)=>{
     user.value=r as func.User;
+    console.log(user.value);
+    loading.value=false;
     router.push('hello');
   });
 

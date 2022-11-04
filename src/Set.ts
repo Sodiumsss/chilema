@@ -7,6 +7,6 @@ export * from "@/ts/Comment"
 export * from "@/ts/Favor"
 export * from "@/ts/Message"
 export * from "@/ts/Cookie"
-
+export * from "@/ts/Hollow"
 
 export {test}

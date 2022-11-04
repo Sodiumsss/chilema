@@ -50,7 +50,8 @@ const join = ()=>{
 
 
 onMounted(()=>{
-  func.userInit(user.value,initCookie).then(()=>{
+  func.userInit(user.value,initCookie).then((r)=>{
+    user.value=r as func.User;
     console.log(user.value);
     if(user.value.hollow)
     {

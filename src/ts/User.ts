@@ -152,6 +152,9 @@ async function userInit(user :User, initCookie:any)
                 if (callBack.success())
                 {
                     user=func.getUserByData(callBack.getData());
+                    console.log("S:");
+
+                    console.log(user);
                     resolve(user);
                 }
                 else
