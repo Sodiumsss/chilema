@@ -40,26 +40,15 @@ import {computed, onMounted, ref} from "vue"
 import * as func from "@/Set"
 import {ElMessage} from "element-plus";
 import router from "@/router";
-//功能
-
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
-//信息
+
 onMounted(()=>{
-  const cookiesState=func.existCookies(initCookie);
-  if (cookiesState===1)
-  {
-    user.value.loadByCookies(initCookie);
-  }
-  else
-  {
-    ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
-    func.clearCookies(initCookie);
-    router.push('guest');
-  }
+   func.userInit(user.value,initCookie).then((r)=>{
+     user.value= r as func.User;
 
+   });
 })
-
 
 const topObjects=ref<Array<func.topObjects>>([]);
 

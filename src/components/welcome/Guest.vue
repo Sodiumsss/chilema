@@ -17,16 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
 import router from "@/router";
 import * as func from "@/Set"
+import {User} from "@/Set";
 
 const initCookie = func.initCookie();
-
+const user = ref<func.User>(new User());
 onMounted(()=>
 {
-
-
   if (func.existCookies(initCookie)===-1)
   {
     func.clearCookies(initCookie);

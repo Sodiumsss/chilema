@@ -26,14 +26,5 @@ async function post(kind: string, method: string, data: string = "", autoBase64:
         return await axios.post("http://" + ip + ":" + port + "/api/" + kind + "/" + method, data,
             {headers:{'Content-Type': 'application/json'}});
     }
-
 }
-
-// post("user","test").then((res)=>{
-//
-//
-//
-// })
-
-
 export {get,post}

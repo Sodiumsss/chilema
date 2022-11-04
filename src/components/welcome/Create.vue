@@ -183,7 +183,7 @@ const usernameInfoIcon=ref<boolean>(true);
 const passwordInfoState=ref<boolean>(false);
 
 //提示
-onMounted(()=> {document.title='请让我了解一下！';})
+onMounted(()=> {document.title='请填写信息';})
 //监听密码
 watch(password,(N)=>{
   if (password.value==="")
@@ -351,7 +351,7 @@ function sendToServer()
     const user = new func.User(username.value,md5(password.value),schoolId.value,birthYear.value
         , nickname.value,0,false,sex.value,favor);
     loading.value=true;
-    func.createWithFavor(user,favor).then((res=>{
+    func.create(user,favor).then((res=>{
       const callBack=func.getResult(res);
       if (callBack.success())
       {

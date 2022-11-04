@@ -18,6 +18,10 @@ class R
     {
         return this.message;
     }
+    getData()
+    {
+        return this.data;
+    }
 }
 
 function getResult(data:any)

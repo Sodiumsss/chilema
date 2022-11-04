@@ -62,14 +62,14 @@ function submit()
     const callBack=func.getResult(res);
     if (callBack.success())
     {
-      ElMessage.success({message:callBack.getMessage(),duration:2000});
+      ElMessage.success({message:"修改成功！",duration:2000});
       func.clearCookies(initCookie);
       router.push('login');
     }
     else
     {
-      ElMessage.error({message:callBack.getMessage(),duration:2000});
-
+      ElMessage.error({message:"修改失败！",duration:2000});
+      func.clearCookies(initCookie);
     }
   }).catch(()=>{ElMessage.error({message:"网络连接出错！",duration:2000});})
 

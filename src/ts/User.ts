@@ -1,5 +1,8 @@
 import * as Connection from "@/ts/Connection";
 import {Favor} from "@/ts/Favor";
+import * as func from "@/Set";
+import {ElMessage} from "element-plus";
+import router from "@/router";
 
 class User
 {
@@ -10,13 +13,13 @@ class User
     birthYear :number;
     nickname :string;
     credit :number;
-    hollow :boolean;
+    hollow :number;
     sex : number;
     favor : Favor | undefined;
 
 
     constructor(username :string="",password :string="",schoolId :any=-1,birthYear :any=-1,nickname :string=""
-        ,credit:number=0,hollow :boolean=false,sex :number=-1,favor ?:Favor)
+        ,credit:number=0,hollow :number=0,sex :number=-1,favor ?:Favor)
     {
         this.username=username;
         this.password=password;
@@ -28,28 +31,35 @@ class User
         this.favor=favor;
         this.sex=sex;
     }
-    async login()
+    login()
     {
         const json=JSON.stringify(this);
-        return await Connection.post("user","login",json);
+        return Connection.post("user","login",json);
     }
 
-    async forgetPW()
+    forgetPW()
     {
         const json=JSON.stringify(this);
-        return await Connection.post("user","forgetPW",json);
+        return Connection.post("user","forgetPW",json);
     }
-    async changeNickname()
+    changeNickname()
     {
         const json=JSON.stringify(this);
-        return await Connection.post("user","changeNickname",json);
+        return Connection.post("user","changeNickname",json);
     }
 
-    async getCredit()
+    validateAndGet()
     {
         const json=JSON.stringify(this);
-        return await Connection.post("user","getCredit",json);
+        return Connection.post("user","validateAndGet",json);
     }
+    joinHollow()
+    {
+        const json=JSON.stringify(this);
+        return Connection.post("user","joinHollow",json);
+    }
+
+
 
 
     setCookies(initCookie:any,setUsername :boolean=true,setPassword :boolean=true,setNickname :boolean=true)
@@ -81,13 +91,21 @@ class User
 
 
 
-
 }
-async function createWithFavor(userAccount:User,favor:Favor)
+function create(userAccount:User, favor:Favor)
 {
     const json=JSON.stringify({userAccount:userAccount,favor:favor});
-    return await Connection.post("user","create",json);
+    return Connection.post("user","create",json);
 }
+
+
+function getUserByData(data :any) : User
+{
+    let user = new User(data.username, data.password, -1, -1, data.nickname, data.credit, data.hollow, data.sex);
+    user.id=data.id;
+    return user;
+}
+
 
 
 function clearCookies(initCookie:any)
@@ -119,15 +137,59 @@ function existCookies(initCookie:any) : number
 
 }
 
-async function validateCookies(initCookie:any)
+async function userInit(user :User, initCookie:any)
 {
-    let cookiesUser = new User();
-    cookiesUser.loadByCookies(initCookie);
-    console.log(cookiesUser);
-    const json=JSON.stringify(cookiesUser);
-    return await Connection.post("user","validate",json);
+    //从Cookies中读取Username、Password、Nickname发送至服务器校验，
+    //如果校验成功，装载更多关于该用户的信息，如果校验失败，直接清空退出。
+    const cookiesState=func.existCookies(initCookie);
+    if (cookiesState===1)//只有在Username、Password、Nickname都存在时才会发起校验，三种缺一直接清空退出。
+    {
+        user.loadByCookies(initCookie);
+
+        return new Promise(resolve => {
+            user.validateAndGet().then((res)=>{
+                const callBack=func.getResult(res);
+                if (callBack.success())
+                {
+                    user=func.getUserByData(callBack.getData());
+                    resolve(user);
+                }
+                else
+                {
+                    ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
+                    func.clearCookies(initCookie);
+                    router.push('guest');
+                }
+            }).catch(()=>{
+                ElMessage.error({message:"网络连接出错，请尝试刷新！",duration:2000});
+            })
+        })
+
+
+
+    }
+    else
+    {
+        ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
+        func.clearCookies(initCookie);
+        await router.push('guest');
+    }
 }
 
+function initUserByCookies(user :User,initCookie:any)
+{
+    const cookiesState=func.existCookies(initCookie);
+    if (cookiesState===1)
+    {
+        user.loadByCookies(initCookie);
+    }
+    else
+    {
+        ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
+        func.clearCookies(initCookie);
+        router.push('guest');
+    }
+}
 
 async function verifyUsername(username :string)
 {
@@ -136,4 +198,4 @@ async function verifyUsername(username :string)
     return await Connection.post("user","verifyUsername",json);
 }
 
-export {createWithFavor,User,verifyUsername,clearCookies,validateCookies,existCookies}
+export {userInit,getUserByData,create,initUserByCookies,User,verifyUsername,clearCookies,existCookies}

@@ -1,11 +1,10 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
-
     {
     path: '/',
     name: 'welcome',
-    component: () => import('../views/welcome.vue'),
+    component: () => import('../views/Welcome.vue'),
     children:
         [
             {
@@ -34,7 +33,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/index',
         name: 'Index',
-        component: () => import('../views/index.vue'),
+        component: () => import('../views/Index.vue'),
         children:
         [
             {
@@ -58,9 +57,9 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('../components/index/Contribute.vue')
             },
             {
-                path: '/hollow',
-                name: 'hollow',
-                component: () => import('../components/index/Hollow.vue')
+                path: '/joinHollow',
+                name: 'joinHollow',
+                component: () => import('../components/index/joinHollow.vue')
             },
 
             {
@@ -68,9 +67,12 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'suggest',
                 component: () => import('../components/index/Suggest.vue')
             },
-
-
         ]
+    },
+    {
+        path: '/hollow',
+        name: 'hollow',
+        component: () => import('../views/Hollow.vue'),
     },
 
     {

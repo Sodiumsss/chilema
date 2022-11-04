@@ -1,7 +1,8 @@
 <template>
-  <router-view/>
+  <div class="main">
+    <router-view/>
+  </div>
 </template>
-
 
 <script lang="ts" setup>
 import {onMounted} from "vue"
@@ -14,30 +15,20 @@ onMounted(()=>{
   {
     func.clearCookies(initCookie);
     router.push('guest');
-
   }
   else
   {
     router.push('index');
   }
 
+
 })
 </script>
-
-<style>
-html,body{
+<style scoped>
+.main{
+  background-color: bisque;
   height: 100%;
-  margin: 0;
-  padding: 0;
+  width: 100%;
+  position: fixed;
 }
-#app {
-  height: 100%;
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
-  'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin-top: 0;
-}
-
-
 </style>

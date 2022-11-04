@@ -57,7 +57,6 @@ function login()
     const callBack=func.getResult(res);
     if (callBack.success())
     {
-
       user.nickname=callBack.message.toString();
       user.setCookies(initCookie);
       if (!func.isAlready(initCookie))
