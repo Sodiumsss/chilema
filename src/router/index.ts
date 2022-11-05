@@ -74,12 +74,18 @@ const routes: Array<RouteRecordRaw> = [
         name: 'hollow',
         component: () => import('../views/Hollow.vue'),
     },
-
+    {
+        path: '/hollowPost',
+        name: 'hollowPost',
+        component: () => import('../views/HollowPost.vue')
+    },
     {
         path: '/:catchAll(.*)',
         name: '404',
         component: () => import('../views/404.vue')
     },
+
+
 
 ]
 

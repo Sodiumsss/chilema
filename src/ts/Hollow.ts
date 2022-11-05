@@ -6,40 +6,45 @@ class HollowThread{
     senderName :string;
     title :string;
     text :string;
-    click :number;
     edit :number;
+    likes :number;
     reply :number;
     createTime :any;
     updateTime :any;
 
 
-    constructor(id :any=null,userid :number=-1,senderName :string="",title :string="",
-                click :number=0,edit :number=0,reply:number=0,createTime :any=null
-                ,text :string="",updateTime :any=null)
+    constructor(id :any=null,userid :any=null,senderName :string="",title :string="",
+                edit :any=0,likes :any=0,reply:any=0,createTime :any=null
+                ,text :any="",updateTime :any=null)
     {
         this.id=id;
         this.userId=userid;
         this.title=title;
-        this.click=click;
         this.reply=reply;
         this.edit=edit;
         this.senderName=senderName;
         this.text=text;
+        this.likes=likes;
         this.createTime=createTime;
         this.updateTime=updateTime;
     }
 
-    post()
+    post(token :string)
     {
         const json=JSON.stringify(this);
-        return Connection.post("hollow","post",json);
+        return Connection.post("hollow","post",json,token);
     }
 
 
 }
-function getHollow(page :number)
+function getHollowByDesc(page :number, token:string)
 {
     const json=JSON.stringify(page);
-    return Connection.post("hollow","get",json);
+    return Connection.post("hollow","getHollowByDesc",json,token);
 }
-export {getHollow,HollowThread}
+function getHollowByAsc(page :number, token:string)
+{
+    const json=JSON.stringify(page);
+    return Connection.post("hollow","getHollowByAsc",json,token);
+}
+export {getHollowByDesc,HollowThread,getHollowByAsc}
