@@ -18,7 +18,7 @@ import * as func from "@/Set"
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 
-onMounted(()=> {func.userInit(user.value,initCookie);})
+onMounted(()=> {func.getUserByToken(initCookie);})
 
 const change = ()=>{
   user.value.changeNickname().then((res)=>{

@@ -59,11 +59,11 @@ const user = ref<func.User>(new func.User());
 const hollowList=ref<func.HollowThread[]>([]);
 const activeName=ref<string>("first");
 onMounted(()=> {
-      func.userInit(user.value,initCookie).then(r=>{
-        user.value=r as func.User;
+      func.getUserByToken(func.getToken(initCookie)).then(r=>{
+        user.value=func.createUserByData(r);
         if (user.value.hollow===0)
         {
-          ElMessage.error({message:"你还没有开通树洞！",duration:2000});
+          ElMessage.info({message:"你还没有开通树洞！",duration:2000});
           router.push('index');
         }
         else

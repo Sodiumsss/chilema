@@ -4,23 +4,20 @@
 
 
 <script lang="ts" setup>
-import {onMounted} from "vue"
-import * as func from "@/Set"
+import {onMounted} from "vue";
 import router from "@/router";
+import * as func from "@/Set"
 
 const initCookie=func.initCookie();
 onMounted(()=>{
-  if (func.existCookies(initCookie)===-1)
+  if (!func.existToken(initCookie))
   {
-    func.clearCookies(initCookie);
     router.push('guest');
-
   }
   else
   {
     router.push('index');
   }
-
 })
 </script>
 

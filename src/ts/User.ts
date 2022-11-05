@@ -34,7 +34,7 @@ class User
     login()
     {
         const json=JSON.stringify(this);
-        return Connection.post("user","login",json);
+        return Connection.post("user","login",json,"login");
     }
 
     forgetPW()
@@ -52,6 +52,12 @@ class User
     {
         const json=JSON.stringify(this);
         return Connection.post("user","validateAndGet",json);
+    }
+
+    test()
+    {
+        const json=JSON.stringify(this);
+        return Connection.post("user","test",json);
     }
     joinHollow()
     {
@@ -86,12 +92,35 @@ class User
         this.password=cookie.get("password");
         this.nickname=cookie.get("nickname");
     }
-
-
-
-
-
 }
+
+function saveToken(initCookie:any,callBack:func.R)
+{
+    initCookie.set("userToken",callBack.getMessage(),callBack.getData().toString()+"s");
+}
+function getToken(initCookie:any)
+{
+    return initCookie.get("userToken");
+}
+function clearToken(initCookie:any)
+{
+    return initCookie.remove("userToken");
+}
+function existToken(initCookie:any) :boolean
+{
+    return initCookie.isKey("userToken");
+}
+async function getUserByToken(token :string)
+{
+    return Connection.post("user","getByToken","",token);
+}
+function createUserByData(data:any) :func.User
+{
+    const r = func.getResult(data);
+    return r.getData() as func.User;
+}
+
+
 function create(userAccount:User, favor:Favor)
 {
     const json=JSON.stringify({userAccount:userAccount,favor:favor});
@@ -99,97 +128,6 @@ function create(userAccount:User, favor:Favor)
 }
 
 
-function getUserByData(data :any) : User
-{
-    let user = new User(data.username, data.password, -1, -1, data.nickname, data.credit, data.hollow, data.sex);
-    user.id=data.id;
-    return user;
-}
-
-
-
-function clearCookies(initCookie:any)
-{
-    const cookie=initCookie;
-    cookie.remove("username");
-    cookie.remove("password");
-    cookie.remove("nickname");
-}
-
-function existCookies(initCookie:any) : number
-{
-    const cookie=initCookie;
-    if (cookie.isKey("username"))
-    {
-        if (cookie.isKey("password"))
-        {
-            if (cookie.isKey("nickname"))
-            {
-                return 1;//用户名，密码，昵称全部存在
-            }
-            else
-            {
-                return 0;//用户名，密码存在
-            }
-        }
-    }
-    return -1;//用户名与密码有缺失
-
-}
-
-async function userInit(user :User, initCookie:any)
-{
-    //从Cookies中读取Username、Password、Nickname发送至服务器校验，
-    //如果校验成功，装载更多关于该用户的信息，如果校验失败，直接清空退出。
-    const cookiesState=func.existCookies(initCookie);
-    if (cookiesState===1)//只有在Username、Password、Nickname都存在时才会发起校验，三种缺一直接清空退出。
-    {
-        user.loadByCookies(initCookie);
-
-        return new Promise(resolve => {
-            user.validateAndGet().then((res)=>{
-                const callBack=func.getResult(res);
-                if (callBack.success())
-                {
-                    user=func.getUserByData(callBack.getData());
-                    resolve(user);
-                }
-                else
-                {
-                    ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
-                    func.clearCookies(initCookie);
-                    router.push('guest');
-                }
-            }).catch(()=>{
-                ElMessage.error({message:"网络连接出错，请尝试刷新！",duration:2000});
-            })
-        })
-
-
-
-    }
-    else
-    {
-        ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
-        func.clearCookies(initCookie);
-        await router.push('guest');
-    }
-}
-
-function initUserByCookies(user :User,initCookie:any)
-{
-    const cookiesState=func.existCookies(initCookie);
-    if (cookiesState===1)
-    {
-        user.loadByCookies(initCookie);
-    }
-    else
-    {
-        ElMessage.error({message:"Cookie失效，请重新登录！",duration:2000});
-        func.clearCookies(initCookie);
-        router.push('guest');
-    }
-}
 
 async function verifyUsername(username :string)
 {
@@ -198,4 +136,4 @@ async function verifyUsername(username :string)
     return await Connection.post("user","verifyUsername",json);
 }
 
-export {userInit,getUserByData,create,initUserByCookies,User,verifyUsername,clearCookies,existCookies}
+export {existToken,clearToken,createUserByData,getToken,getUserByToken,saveToken,create,User,verifyUsername}

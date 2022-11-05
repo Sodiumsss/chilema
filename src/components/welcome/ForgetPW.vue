@@ -63,13 +63,13 @@ function submit()
     if (callBack.success())
     {
       ElMessage.success({message:"修改成功！",duration:2000});
-      func.clearCookies(initCookie);
+      func.clearToken(initCookie);
       router.push('login');
     }
     else
     {
       ElMessage.error({message:"修改失败！",duration:2000});
-      func.clearCookies(initCookie);
+      func.clearToken(initCookie);
     }
   }).catch(()=>{ElMessage.error({message:"网络连接出错！",duration:2000});})
 

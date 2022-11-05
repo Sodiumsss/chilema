@@ -63,6 +63,7 @@
       </el-container>
     </template>
   </el-skeleton>
+
 </template>
 
 <script lang="ts" setup>
@@ -70,18 +71,22 @@ import {onMounted, ref} from "vue"
 import router from "@/router";
 import * as func from "@/Set"
 import {ElMessage} from "element-plus";
+
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const loading =ref<boolean>(true);
+
 onMounted(()=>{
-  func.userInit(user.value,initCookie).then((r)=>{
-    user.value=r as func.User;
-    console.log(user.value);
+  func.getUserByToken(func.getToken(initCookie)).then(r=>{
+    user.value=func.createUserByData(r);
     loading.value=false;
-    router.push('hello');
-  });
+  }).catch(()=>{
+    func.clearToken(initCookie);
+    ElMessage.error({message:"请重新登录！",duration:2000});
+  })
 
 }
+
 
 )
 
@@ -105,7 +110,7 @@ const handleSelect = (key: string, keyPath: string[]) => {
       router.push('profile');
       break;
     case 'quit':
-      func.clearCookies(initCookie);
+      func.clearToken(initCookie);
       router.push('guest');
       break;
 

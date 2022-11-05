@@ -29,4 +29,4 @@ function getResult(data:any)
     return new R(data);
 }
 
-export {getResult}
+export {R,getResult}

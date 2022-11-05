@@ -26,11 +26,7 @@ const initCookie = func.initCookie();
 const user = ref<func.User>(new User());
 onMounted(()=>
 {
-  if (func.existCookies(initCookie)===-1)
-  {
-    func.clearCookies(initCookie);
-  }
-  else
+  if (func.existToken(initCookie))
   {
     router.push('index');
   }

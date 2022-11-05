@@ -11,17 +11,14 @@ import router from "@/router";
 
 const initCookie=func.initCookie();
 onMounted(()=>{
-  if (func.existCookies(initCookie)===-1)
+  if (!func.existToken(initCookie))
   {
-    func.clearCookies(initCookie);
     router.push('guest');
   }
   else
   {
     router.push('index');
   }
-
-
 })
 </script>
 <style scoped>

@@ -1,5 +1,4 @@
 <template>
-
   <el-row justify="center">
               <span>
                 {{ user.nickname }}，{{ getTime }}
@@ -38,16 +37,12 @@
 <script lang="ts" setup>
 import {computed, onMounted, ref} from "vue"
 import * as func from "@/Set"
-import {ElMessage} from "element-plus";
-import router from "@/router";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 
-onMounted(()=>{
-   func.userInit(user.value,initCookie).then((r)=>{
-     user.value= r as func.User;
 
-   });
+onMounted(()=>{
+
 })
 
 const topObjects=ref<Array<func.topObjects>>([]);

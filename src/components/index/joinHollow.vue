@@ -50,9 +50,8 @@ const join = ()=>{
 
 
 onMounted(()=>{
-  func.userInit(user.value,initCookie).then((r)=>{
-    user.value=r as func.User;
-    console.log(user.value);
+  func.getUserByToken(func.getToken(initCookie)).then((r)=>{
+    user.value=func.createUserByData(r);
     if(user.value.hollow)
     {
       router.push('hollow');
