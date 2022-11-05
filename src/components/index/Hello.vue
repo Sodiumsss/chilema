@@ -1,37 +1,32 @@
 <template>
-  <el-row justify="center">
+  <el-skeleton :loading="loading" animated>
+    <template #default>
+      <el-row justify="center">
               <span>
                 {{ user.nickname }}，{{ getTime }}
               </span>
-  </el-row>
-  <el-carousel style="margin-top: 8px;" height="150px">
-    <el-carousel-item v-for="i in 5" :key="i">
-      <h3>{{i}}</h3>
-    </el-carousel-item>
-  </el-carousel>
-
-  <el-row :gutter=20 justify="center" style="margin-top: 10px;">
-    <el-col v-for="(item) in topObjects" :span="8">
-      <el-card >
-        <el-row justify="center">
-          <el-space direction="vertical">
-            <p>{{item.name}}</p>
-            <div v-for="i in item.list">
-              <a>#{{i.id}}.{{i.name}}</a>
-
-            </div>
-
-          </el-space>
-
-
-
-        </el-row>
-      </el-card>
-
-    </el-col>
-
-  </el-row>
-
+      </el-row>
+      <el-carousel style="margin-top: 8px;" height="150px">
+        <el-carousel-item v-for="i in 5" :key="i">
+          <h3>{{i}}</h3>
+        </el-carousel-item>
+      </el-carousel>
+      <el-row :gutter=20 justify="center" style="margin-top: 10px;">
+        <el-col v-for="(item) in topObjects" :span="8">
+          <el-card >
+            <el-row justify="center">
+              <el-space direction="vertical">
+                <p>{{item.name}}</p>
+                <div v-for="i in item.list">
+                  <a>#{{i.id}}.{{i.name}}</a>
+                </div>
+              </el-space>
+            </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
+    </template>
+  </el-skeleton>
 </template>
 
 <script lang="ts" setup>
@@ -39,9 +34,15 @@ import {computed, onMounted, ref} from "vue"
 import * as func from "@/Set"
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
+const loading=ref<boolean>(true);
 
 
 onMounted(()=>{
+  func.getUserByToken(func.getToken(initCookie)).then(r=>{
+    user.value=func.createUserByData(r);
+    loading.value=false;
+  })
+
 
 })
 

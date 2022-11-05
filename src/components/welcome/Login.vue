@@ -41,7 +41,7 @@ const loading=ref<boolean>(false);
 const initCookie = func.initCookie();
 
 onMounted(()=>{
-  func.clearCookies(initCookie);
+  func.clearToken(initCookie);
 })
 
 function login()
@@ -58,7 +58,7 @@ function login()
     if (callBack.success())
     {
       func.saveToken(initCookie,callBack);
-      router.push('index');
+      router.push('hello');
     }
     else
     {

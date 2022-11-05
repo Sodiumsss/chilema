@@ -12,21 +12,25 @@
 <script lang="ts" setup>
 
 import {onMounted, ref} from "vue";
-import router from "@/router";
 import {ElMessage} from "element-plus";
 import * as func from "@/Set"
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 
-onMounted(()=> {func.getUserByToken(initCookie);})
+onMounted(()=> {
+  func.getUserByToken(func.getToken(initCookie)).then(r=>{
+    user.value=func.createUserByData(r);
+  });
+
+})
 
 const change = ()=>{
-  user.value.changeNickname().then((res)=>{
+  console.log(user.value);
+  func.setNickname(user.value,func.getToken(initCookie)).then((res)=>{
     const callBack=func.getResult(res);
     if (callBack.success())
     {
       ElMessage.success({message:"修改成功！",duration:2000});
-      user.value.setCookies(initCookie);
     }
     else
     {

@@ -1,8 +1,7 @@
 import * as Connection from "@/ts/Connection";
 import {Favor} from "@/ts/Favor";
 import * as func from "@/Set";
-import {ElMessage} from "element-plus";
-import router from "@/router";
+
 
 class User
 {
@@ -40,100 +39,63 @@ class User
     forgetPW()
     {
         const json=JSON.stringify(this);
-        return Connection.post("user","forgetPW",json);
-    }
-    changeNickname()
-    {
-        const json=JSON.stringify(this);
-        return Connection.post("user","changeNickname",json);
-    }
-
-    validateAndGet()
-    {
-        const json=JSON.stringify(this);
-        return Connection.post("user","validateAndGet",json);
-    }
-
-    test()
-    {
-        const json=JSON.stringify(this);
-        return Connection.post("user","test",json);
-    }
-    joinHollow()
-    {
-        const json=JSON.stringify(this);
-        return Connection.post("user","joinHollow",json);
+        return Connection.post("user","forgetPW",json,"forgetPW");
     }
 
 
 
-
-    setCookies(initCookie:any,setUsername :boolean=true,setPassword :boolean=true,setNickname :boolean=true)
-    {
-        const cookie=initCookie;
-        if (setUsername)
-        {
-            cookie.set("username",this.username,"30d");
-        }
-        if (setPassword)
-        {
-            cookie.set("password",this.password,"30d");
-        }
-        if (setNickname)
-        {
-            cookie.set("nickname",this.nickname,"30d");
-        }
-    }
-
-    loadByCookies(initCookie:any)
-    {
-        const cookie=initCookie;
-        this.username=cookie.get("username");
-        this.password=cookie.get("password");
-        this.nickname=cookie.get("nickname");
-    }
 }
 
-function saveToken(initCookie:any,callBack:func.R)
+
+
+//Token操作
+function saveToken(initCookie:any,callBack:func.R)//填入R类，保存token至cookies中
 {
     initCookie.set("userToken",callBack.getMessage(),callBack.getData().toString()+"s");
 }
-function getToken(initCookie:any)
+function getToken(initCookie:any)//从cookies中拿token
 {
     return initCookie.get("userToken");
 }
-function clearToken(initCookie:any)
+function clearToken(initCookie:any)//从cookies中删token
 {
     return initCookie.remove("userToken");
 }
-function existToken(initCookie:any) :boolean
+function existToken(initCookie:any) :boolean//cookies中token是否存在
 {
     return initCookie.isKey("userToken");
 }
-async function getUserByToken(token :string)
+async function getUserByToken(token :string)//使用token从服务器请求user信息
 {
     return Connection.post("user","getByToken","",token);
 }
-function createUserByData(data:any) :func.User
-{
-    const r = func.getResult(data);
-    return r.getData() as func.User;
-}
 
-
+//通讯
 function create(userAccount:User, favor:Favor)
 {
     const json=JSON.stringify({userAccount:userAccount,favor:favor});
-    return Connection.post("user","create",json);
+    return Connection.post("user","create",json,"create");
 }
-
-
-
-async function verifyUsername(username :string)
+function joinHollow(token :string)
 {
-    const user = new User(username);
-    const json=JSON.stringify(user);
-    return await Connection.post("user","verifyUsername",json);
+    return Connection.post("user","joinHollow","",token);
 }
 
-export {existToken,clearToken,createUserByData,getToken,getUserByToken,saveToken,create,User,verifyUsername}
+function setNickname(user :func.User,token:string)
+{
+    const json=JSON.stringify(user);
+    return Connection.post("user","changeNickname",json,token);
+}
+function verifyUsername(username :string)
+{
+
+    return Connection.post("user","verifyUsername",username ,"verifyUsername");
+}
+
+
+function createUserByData(r:any) : func.User
+{
+    const callback:func.R=func.getResult(r);
+    return callback.getData() as func.User;
+}
+export {setNickname,createUserByData,joinHollow,existToken,clearToken,getToken,getUserByToken,saveToken,create,User,verifyUsername}

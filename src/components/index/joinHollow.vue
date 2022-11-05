@@ -32,7 +32,7 @@ const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 
 const join = ()=>{
-  user.value.joinHollow().then((res)=>{
+  func.joinHollow(func.getToken(initCookie)).then((res)=>{
     const callBack= func.getResult(res);
     if (callBack.success())
     {

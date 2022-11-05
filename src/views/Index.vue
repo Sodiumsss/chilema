@@ -1,6 +1,5 @@
 <template>
-  <el-skeleton animated :loading="loading">
-    <template #default>
+
       <el-container class="big-container">
         <el-container>
           <el-aside>
@@ -22,16 +21,10 @@
                   </el-menu-item>
                 </el-sub-menu>
 
-                <template v-if="user.hollow>0">
                   <el-menu-item index="hollow">
-                    <template #title>进入树洞</template>
+                    <template #title>树洞</template>
                   </el-menu-item>
-                </template>
-                <template v-if="user.hollow===0">
-                  <el-menu-item index="joinHollow">
-                    <template #title>开通树洞</template>
-                  </el-menu-item>
-                </template>
+
 
                 <el-menu-item index="profile">
                   <template #title>账号管理</template>
@@ -59,36 +52,17 @@
             </el-space>
           </el-row>
         </el-footer>
-
       </el-container>
-    </template>
-  </el-skeleton>
 
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue"
+import {ref} from "vue"
 import router from "@/router";
 import * as func from "@/Set"
-import {ElMessage} from "element-plus";
-
 const initCookie=func.initCookie();
-const user = ref<func.User>(new func.User());
-const loading =ref<boolean>(true);
-
-onMounted(()=>{
-  func.getUserByToken(func.getToken(initCookie)).then(r=>{
-    user.value=func.createUserByData(r);
-    loading.value=false;
-  }).catch(()=>{
-    func.clearToken(initCookie);
-    ElMessage.error({message:"请重新登录！",duration:2000});
-  })
-
-}
 
 
-)
 
 const aboutUs = ()=>{
   alert(1111);
@@ -119,9 +93,6 @@ const handleSelect = (key: string, keyPath: string[]) => {
       break;
     case 'hollow':
       router.push('hollow');
-      break;
-    case 'joinHollow':
-      router.push('joinHollow');
       break;
     case 'contribute':
       router.push('contribute');

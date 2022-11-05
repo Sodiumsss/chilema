@@ -1,51 +1,42 @@
 <template>
-
-    <el-container>
+  <el-skeleton animated :loading="loading">
+    <template #default>
       <el-container>
-        <el-aside width="200px">
-          <el-card class="aside-card">
-            <el-row justify="center">
-              <el-space direction="vertical">
-                <p v-text="user.nickname"/>
-                <p v-text="user.nickname"/>
-                <p v-text="user.nickname"/>
-                <p v-text="user.nickname"/>
-                <p v-text="user.nickname"/>
-                <el-link href="index">返回</el-link>
-              </el-space>
-            </el-row>
-
-          </el-card>
-
-        </el-aside>
-        <el-main>
-
-          <el-card class="main-card">
-            <el-tabs v-model="activeName">
-              <el-tab-pane label="最新" name="first">
-                <el-card v-for="i in hollowList">
-                  <p>{{i.title}}</p>
-                  <br/>
-                  <p>{{i.text}}</p>
-
-
-                </el-card>
-
-
-                <el-button @click="post">post</el-button>
-
-              </el-tab-pane>
-              <el-tab-pane label="最热" name="second">Config</el-tab-pane>
-
-            </el-tabs>
-          </el-card>
-
-        </el-main>
+        <el-container>
+          <el-aside width="200px">
+            <el-card class="aside-card">
+              <el-row justify="center">
+                <el-space direction="vertical">
+                  <p v-text="user.nickname"/>
+                  <p v-text="user.nickname"/>
+                  <p v-text="user.nickname"/>
+                  <p v-text="user.nickname"/>
+                  <p v-text="user.nickname"/>
+                  <el-link href="index">返回</el-link>
+                </el-space>
+              </el-row>
+            </el-card>
+          </el-aside>
+          <el-main>
+            <el-card class="main-card">
+              <el-tabs v-model="activeName">
+                <el-tab-pane label="最新" name="first">
+                  <el-card v-for="i in hollowList">
+                    <p>{{i.title}}</p>
+                    <br/>
+                    <p>{{i.text}}</p>
+                  </el-card>
+                  <el-button @click="post">post</el-button>
+                </el-tab-pane>
+                <el-tab-pane label="最热" name="second">Config</el-tab-pane>
+              </el-tabs>
+            </el-card>
+          </el-main>
+        </el-container>
+        <el-footer>footer</el-footer>
       </el-container>
-      <el-footer>footer</el-footer>
-    </el-container>
-
-
+    </template>
+  </el-skeleton>
 </template>
 
 <script lang="ts" setup>
@@ -58,20 +49,21 @@ const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const hollowList=ref<func.HollowThread[]>([]);
 const activeName=ref<string>("first");
+const loading =ref<boolean>(true);
 onMounted(()=> {
       func.getUserByToken(func.getToken(initCookie)).then(r=>{
         user.value=func.createUserByData(r);
+
         if (user.value.hollow===0)
         {
-          ElMessage.info({message:"你还没有开通树洞！",duration:2000});
-          router.push('index');
+          router.push('joinHollow');
         }
         else
         {
           func.getHollow(1).then(r=>{
             const callBack=func.getResult(r);
             hollowList.value=callBack.getData() as func.HollowThread[];
-            console.log(hollowList.value);
+            loading.value=false;
           })
         }
       });
