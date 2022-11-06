@@ -38,13 +38,13 @@
       {{thisHollow.text}}
       <el-divider/>
       <el-card shadow="never" v-for="(i,index) in thisReplyList" class="singleReply">
-        <el-row style="margin-bottom: 2px;" :gutter="10" justify="start">
-          <el-col :span="1.5">
-            <el-link>
+        <el-row style="margin-bottom: 2px;" :gutter="10" justify="space-between">
+          <el-col :span="19">
+            <el-link style="font-size: medium">
               {{i.senderName}}
             </el-link>
           </el-col>
-          <el-col :span="21">
+          <el-col :span="4">
             <a style="font-size: smaller" v-text="getDiffTime(i.createTime)" />
           </el-col>
           <el-col :span="1">
