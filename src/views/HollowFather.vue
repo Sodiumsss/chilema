@@ -36,6 +36,7 @@ const loading =ref<boolean>(true);
 onMounted(()=> {
       func.getUserByToken(func.getToken(initCookie)).then(r=>{
         user.value=func.createUserByData(r);
+        sessionStorage.setItem('user',JSON.stringify(user.value));
         if (user.value.hollow===0)
         {
           router.push('joinHollow');

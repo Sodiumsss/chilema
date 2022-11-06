@@ -5,9 +5,12 @@
       <el-card shadow="hover" v-for="i in hollowList" class="singleThread">
         <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
         <br/>
-        <el-row :gutter="10" justify="start">
+        <el-row justify="start">
           <el-col :span="17">
             <el-tag class="threadTag">{{i.senderName}}</el-tag>
+          </el-col>
+          <el-col :span="1.5">
+            <el-tag type="danger" class="threadTag">点击{{i.clicks}}</el-tag>
           </el-col>
           <el-col :span="1.5">
             <el-tag type="danger" class="threadTag">赞{{i.likes}}</el-tag>
@@ -16,7 +19,7 @@
           <el-col :span="1.5">
             <el-tag type="success" class="threadTag">回复{{i.reply}}</el-tag>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="2">
             <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
           </el-col>
         </el-row>
@@ -26,7 +29,7 @@
     </el-tab-pane>
 
     <el-tab-pane label="最热" name="second">
-      111
+      好冷
     </el-tab-pane>
   </el-tabs>
 </template>
