@@ -18,7 +18,7 @@ onMounted(()=>{
   document.title="啊哦";
   if (func.existToken(initCookie))
   {
-    jumpPage.value='/index';
+    jumpPage.value='/hello';
   }
   else
   {
