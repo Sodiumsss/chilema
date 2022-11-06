@@ -1,62 +1,97 @@
 <template>
+<el-skeleton animated :loading="loading">
+  <template #default>
 
-  <el-tabs v-model="activeName">
-    <el-tab-pane label="最新" name="first">
-      <el-card shadow="hover" v-for="i in hollowList" class="singleThread">
-        <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
-        <br/>
-        <el-row justify="start">
-          <el-col :span="16">
-            <el-tag class="threadTag">{{i.senderName}}</el-tag>
-          </el-col>
-          <el-col :span="1.5">
-            <el-tag type="danger" class="threadTag">点击{{i.clicks}}</el-tag>
-          </el-col>
-          <el-col :span="1.5">
-            <el-tag type="danger" class="threadTag">赞{{i.likes}}</el-tag>
-          </el-col>
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="最新" name="first">
+        <el-card shadow="hover" v-for="i in hollowList" class="singleThread">
+          <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
+          <br/>
+          <el-row justify="start">
+            <el-col :span="16">
+              <el-tag type="warning" class="threadTag">帖主：{{i.senderName}}</el-tag>
+            </el-col>
+            <el-col :span="1.5">
+              <el-tag  class="threadTag">点击{{i.clicks}}</el-tag>
+            </el-col>
+            <el-col :span="1.5">
+              <el-tag type="danger" class="threadTag">赞{{i.likes}}</el-tag>
+            </el-col>
 
-          <el-col :span="1.5">
-            <el-tag type="success" class="threadTag">回复{{i.reply}}</el-tag>
-          </el-col>
-          <el-col :span="3">
-            <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
-          </el-col>
-        </el-row>
+            <el-col :span="1.5">
+              <el-tag type="success" class="threadTag">回复{{i.reply}}</el-tag>
+            </el-col>
+            <el-col :span="3">
+              <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
+            </el-col>
+          </el-row>
 
 
-      </el-card>
-    </el-tab-pane>
+        </el-card>
+        <el-pagination :page-size="5" @current-change="currentChange"
+                       v-model:current-page="nowPage" layout="total, prev, pager, next" :total="size"/>
 
-    <el-tab-pane label="最热" name="second">
-      好冷
-    </el-tab-pane>
-  </el-tabs>
+
+      </el-tab-pane>
+
+      <el-tab-pane label="最热" name="second">
+        好冷
+      </el-tab-pane>
+    </el-tabs>
+  </template>
+
+</el-skeleton>
+
 </template>
 
 <script lang="ts" setup>
 import * as func from "@/Set";
 import {onMounted, ref} from "vue";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const hollowList=ref<func.HollowThread[]>([]);
 const activeName=ref<string>("first");
 const loading =ref<boolean>(true);
-
+const nowPage=ref<number>(1);
+const size=ref<number>(-1);
 onMounted(()=>{
-  func.getHollowByDesc(1,func.getToken(initCookie)).then(r=>{
+  func.getHollowByDesc(nowPage.value,func.getToken(initCookie)).then(r=>{
+    if (r.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
     const callBack=func.getResult(r);
 
     hollowList.value=callBack.getData() as func.HollowThread[];
-
+    size.value=Number(callBack.getMessage());
     loading.value=false;
   })
 }
 
 )
+const currentChange=()=>{
+  loading.value=true;
+  func.getHollowByDesc(nowPage.value,func.getToken(initCookie)).then(r=>{
+    if (r.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
+    const callBack=func.getResult(r);
 
+    hollowList.value=callBack.getData() as func.HollowThread[];
+    size.value=Number(callBack.getMessage());
+    loading.value=false;
+  })
+}
 
 const joinThread=(id : any)=>
 {

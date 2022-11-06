@@ -30,11 +30,19 @@
 import * as func from "@/Set";
 import {onMounted, ref} from "vue";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const loading =ref<boolean>(true);
 onMounted(()=> {
       func.getUserByToken(func.getToken(initCookie)).then(r=>{
+        if (r.data==="")
+        {
+          func.clearToken(initCookie);
+          ElMessage.error({message:"请重新登录！",duration:2000});
+          router.push('guest');
+          return;
+        }
         user.value=func.createUserByData(r);
         sessionStorage.setItem('user',JSON.stringify(user.value));
         if (user.value.hollow===0)

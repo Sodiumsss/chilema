@@ -14,11 +14,19 @@
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import * as func from "@/Set"
+import router from "@/router";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 
 onMounted(()=> {
   func.getUserByToken(func.getToken(initCookie)).then(r=>{
+    if (r.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
     user.value=func.createUserByData(r);
   });
 
@@ -27,6 +35,13 @@ onMounted(()=> {
 const change = ()=>{
   console.log(user.value);
   func.setNickname(user.value,func.getToken(initCookie)).then((res)=>{
+    if (res.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
     const callBack=func.getResult(res);
     if (callBack.success())
     {

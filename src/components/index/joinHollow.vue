@@ -33,6 +33,13 @@ const user = ref<func.User>(new func.User());
 
 const join = ()=>{
   func.joinHollow(func.getToken(initCookie)).then((res)=>{
+    if (res.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
     const callBack= func.getResult(res);
     if (callBack.success())
     {

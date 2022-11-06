@@ -37,6 +37,13 @@ const post = ()=>{
   let me = new func.HollowThread(null,null,"",title.value,0,0,0,
       null,text.value,null);
   me.post(func.getToken(initCookie)).then(r=>{
+    if (r.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
     const callBack=func.getResult(r);
     if (callBack.success())
     {

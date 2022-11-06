@@ -20,7 +20,7 @@
         </el-col>
 
         <el-col :span="15">
-          <el-tag  class="threadTag">{{thisHollow.senderName}}</el-tag>
+          <el-tag  class="threadTag">帖主：{{thisHollow.senderName}}</el-tag>
         </el-col>
 
         <el-col :span="1.5">
@@ -99,6 +99,13 @@ onMounted(()=>{
     const UWH=new func.UserIDWithHollowID(threadId.value,user.value.id);
 
     func.getSingleHollow(UWH,func.getToken(initCookie)).then(r=>{
+      if (r.data==="")
+      {
+        func.clearToken(initCookie);
+        ElMessage.error({message:"请重新登录！",duration:2000});
+        router.push('guest');
+        return;
+      }
       const callBack=func.getResult(r);
       thisHollowWithReply.value=callBack.getData() as func.HollowThreadWithReply;
       thisHollow.value=thisHollowWithReply.value.hollowThread;
@@ -113,6 +120,13 @@ const backHollow=()=>{
 const reply=()=>{
   const object = new func.UserHollowText(user.value.id,threadId.value,replyText.value,user.value.nickname);
   func.reply(object,func.getToken(initCookie)).then(r=>{
+    if (r.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
     const callBack = func.getResult(r);
     if (callBack.success())
     {
@@ -138,6 +152,13 @@ const like=()=>{
   {
     const userIDWithHollowID = new func.UserIDWithHollowID(thisHollow.value.id,user.value.id);
     func.setLike(userIDWithHollowID,func.getToken(initCookie)).then(r=>{
+      if (r.data==="")
+      {
+        func.clearToken(initCookie);
+        ElMessage.error({message:"请重新登录！",duration:2000});
+        router.push('guest');
+        return;
+      }
       const callBack=func.getResult(r);
       if (callBack.success())
       {
@@ -158,6 +179,7 @@ const like=()=>{
   {
     const userIDWithHollowID = new func.UserIDWithHollowID(thisHollow.value.id,user.value.id);
     func.cancelLike(userIDWithHollowID,func.getToken(initCookie)).then(r=>{
+
       const callBack=func.getResult(r);
       if (callBack.success())
       {

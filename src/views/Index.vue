@@ -57,7 +57,6 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue"
 import router from "@/router";
 import * as func from "@/Set"
 const initCookie=func.initCookie();
@@ -74,7 +73,6 @@ const userReport = ()=>{
 
 //菜单
 const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
   switch (key)
   {
     case 'hello':

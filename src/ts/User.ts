@@ -48,6 +48,7 @@ class User
 
 
 
+
 //Token操作
 function saveToken(initCookie:any,callBack:func.R)//填入R类，保存token至cookies中
 {

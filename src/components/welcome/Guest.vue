@@ -35,7 +35,7 @@ onMounted(()=>
 const getText=computed(()=>{
   if (func.isAlready(initCookie))
   {
-    return '嘿，朋友，别来无恙啊！';
+    return '嘿，别来无恙啊！';
   }
   else
   {

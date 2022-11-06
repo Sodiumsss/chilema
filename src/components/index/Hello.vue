@@ -32,27 +32,34 @@
 <script lang="ts" setup>
 import {computed, onMounted, ref} from "vue"
 import * as func from "@/Set"
+import {ElMessage} from "element-plus";
+import router from "@/router";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const loading=ref<boolean>(true);
 
 
-onMounted(()=>{
-  func.getUserByToken(func.getToken(initCookie)).then(r=>{
-    user.value=func.createUserByData(r);
-    loading.value=false;
-  })
 
-
-})
 
 const topObjects=ref<Array<func.topObjects>>([]);
 
 onMounted(()=>{
+  func.getUserByToken(func.getToken(initCookie)).then(r=>{
+    if (r.data==="")
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      router.push('guest');
+      return;
+    }
+    user.value=func.createUserByData(r);
+
+    loading.value=false;
+  })
 
   if (func.test)
   {
-    console.log('TestMode Open');
+    console.log('TestMode');
     for (let i=0;i<3;i++)
     {
       let tmp =new func.topObjects;
