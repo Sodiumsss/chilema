@@ -58,6 +58,7 @@ function login()
     if (callBack.success())
     {
       func.saveToken(initCookie,callBack);
+      func.setAlready(initCookie);
       router.push('hello');
     }
     else

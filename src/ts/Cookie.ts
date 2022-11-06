@@ -18,7 +18,7 @@ function isAlready(initCookie:any) :boolean
 
 function setAlready(initCookie:any)
 {
-    initCookie.set("already",":)",-1);
+    initCookie.set("already",":)","365D");
 }
 
 
