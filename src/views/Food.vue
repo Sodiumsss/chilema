@@ -18,6 +18,11 @@
       <a style="margin-left: 10px;margin-right: 10px;">></a>
       <el-link @click="copyLink">食物介绍页</el-link>
       <br/>
+      <el-image style="width: 200px;height: 200px;" :src="src">
+        <template #placeholder>
+          <div class="image-slot">Loading<span class="dot">...</span></div>
+        </template>
+      </el-image>
     </template>
   </el-skeleton>
       </el-card>
@@ -33,11 +38,13 @@ import {ElNotification} from "element-plus";
 const initCookie = func.initCookie();
 const loading =ref<boolean>(true);
 const food = ref <func.food>(new func.food());
+
 onMounted(()=>{
-  if (func.test)
-  {
-    loading.value=false;
-  }
+  func.getSingleFood("1589211115087257601",func.getToken(initCookie)).then(r=>{
+    console.log(r);
+  }).catch(r=>{
+
+  })
 })
 const backHello = ()=>{
   router.push('hello');

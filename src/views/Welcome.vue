@@ -11,6 +11,7 @@ import router from "@/router";
 
 const initCookie=func.initCookie();
 onMounted(()=>{
+  document.title='吃了吗';
   if (!func.existToken(initCookie))
   {
     router.push('guest');

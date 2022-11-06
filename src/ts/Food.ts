@@ -1,5 +1,7 @@
+import * as Connection from "@/ts/Connection";
+
 class food{
-    id :number;
+    id :any;
     name :string;
     acid :number;
     sweet :number;
@@ -9,7 +11,7 @@ class food{
     supply_time :string;
     pic :any;
     description :string;
-    constructor(id:number=-1,name:string="",acid:number=-1,sweet:number=-1,spicy:number=-1,pepper:number=-1
+    constructor(id:any=-1,name:string="",acid:number=-1,sweet:number=-1,spicy:number=-1,pepper:number=-1
                 ,salt:number=-1,supply_time:string=""
         ,pic:any="",description :string="") {
         this.id=id;
@@ -23,5 +25,17 @@ class food{
         this.pic=pic;
         this.description=description;
     }
+
+
+
 }
-export {food}
+
+function getSingleFood(foodId :any,token :string)
+{
+    const json=JSON.stringify(foodId);
+    return Connection.post("food","getSingleFood",json,token);
+}
+
+
+
+export {getSingleFood,food}

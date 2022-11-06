@@ -6,7 +6,7 @@
                 {{ user.nickname }}，{{ getTime }}
               </span>
       </el-row>
-      <el-carousel style="margin-top: 8px;" height="150px">
+      <el-carousel height="150px" style="margin-top: 8px;">
         <el-carousel-item v-for="i in 5" :key="i">
           <h3>{{i}}</h3>
         </el-carousel-item>
@@ -44,6 +44,7 @@ const loading=ref<boolean>(true);
 const topObjects=ref<Array<func.topObjects>>([]);
 
 onMounted(()=>{
+  document.title='吃了吗';
   func.getUserByToken(func.getToken(initCookie)).then(r=>{
     if (r.data==="")
     {

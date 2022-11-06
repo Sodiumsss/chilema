@@ -26,6 +26,7 @@ const initCookie = func.initCookie();
 const user = ref<func.User>(new User());
 onMounted(()=>
 {
+  document.title='吃了吗';
   if (func.existToken(initCookie))
   {
     router.push('index');
