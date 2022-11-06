@@ -70,15 +70,28 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/hollow',
-        name: 'hollow',
-        component: () => import('../views/Hollow.vue'),
+        path: '/hollowFather',
+        name: 'hollowFather',
+        component: () => import('../views/HollowFather.vue'),
+        children:[
+            {
+                path: '/threadRead',
+                name: 'threadRead',
+                component: () => import('../components/hollow/ThreadRead.vue')
+            },
+            {
+                path: '/hollow',
+                name: 'hollow',
+                component: () => import('../components/hollow/hollowShow.vue')
+            },
+        ]
     },
     {
         path: '/hollowPost',
         name: 'hollowPost',
         component: () => import('../views/HollowPost.vue')
     },
+
     {
         path: '/:catchAll(.*)',
         name: '404',

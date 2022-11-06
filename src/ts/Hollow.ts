@@ -47,4 +47,10 @@ function getHollowByAsc(page :number, token:string)
     const json=JSON.stringify(page);
     return Connection.post("hollow","getHollowByAsc",json,token);
 }
-export {getHollowByDesc,HollowThread,getHollowByAsc}
+
+function getSingleHollow(id :number, token:string)
+{
+    const json=JSON.stringify(id);
+    return Connection.post("hollow","getSingleHollow",json,token);
+}
+export {getSingleHollow,getHollowByDesc,HollowThread,getHollowByAsc}
