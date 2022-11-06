@@ -6,7 +6,7 @@
         <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
         <br/>
         <el-row justify="start">
-          <el-col :span="17">
+          <el-col :span="16">
             <el-tag class="threadTag">{{i.senderName}}</el-tag>
           </el-col>
           <el-col :span="1.5">
@@ -19,7 +19,7 @@
           <el-col :span="1.5">
             <el-tag type="success" class="threadTag">回复{{i.reply}}</el-tag>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="3">
             <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
           </el-col>
         </el-row>
