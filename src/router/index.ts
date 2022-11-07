@@ -93,12 +93,12 @@ const routes: Array<RouteRecordRaw> = [
             },
         ]
     },
-    {
-        path: '/hollowPost',
-        name: 'hollowPost',
-        component: () => import('../views/HollowPost.vue')
-    },
 
+    {
+        path: '/r',
+        name: 'r',
+        component: () => import('../views/Redirect.vue')
+    },
     {
         path: '/:catchAll(.*)',
         name: '404',

@@ -52,7 +52,6 @@ class UserHollowText {
         this.senderName=n;
     }
 }
-
 class UserIDWithHollowID
 {
     hollowID:any;
@@ -63,7 +62,6 @@ class UserIDWithHollowID
         this.userID=i;
     }
 }
-
 class HollowReply
 {
     id :number;
@@ -82,8 +80,7 @@ class HollowReply
         this.createTime=createTime;
     }
 }
-
-class HollowThreadWithReply
+class HollowThreadWithReplies
 {
     hollowThread:HollowThread;
     hollowReplyList:HollowReply[];
@@ -97,11 +94,6 @@ function getHollowByDesc(page :number, token:string)
 {
     const json=JSON.stringify(page);
     return Connection.post("hollow","getHollowByDesc",json,token);
-}
-function getHollowByAsc(page :number, token:string)
-{
-    const json=JSON.stringify(page);
-    return Connection.post("hollow","getHollowByAsc",json,token);
 }
 
 function setLike(object :UserIDWithHollowID, token:string)
@@ -127,5 +119,5 @@ function reply(object :UserHollowText, token:string)
     const json=JSON.stringify(object);
     return Connection.post("hollow","reply",json,token);
 }
-export {HollowReply,HollowThreadWithReply,reply,UserHollowText,setLike,cancelLike,UserIDWithHollowID
-    ,getSingleHollow,getHollowByDesc,HollowThread,getHollowByAsc}
+export {HollowReply,HollowThreadWithReplies,reply,UserHollowText,setLike,cancelLike,UserIDWithHollowID
+    ,getSingleHollow,getHollowByDesc,HollowThread,}

@@ -1,47 +1,40 @@
 <template>
-<el-skeleton animated :loading="loading">
-  <template #default>
+  <el-skeleton animated :loading="loading">
+    <template #default>
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="最新" name="first">
+          <el-card shadow="hover" v-for="i in hollowList" class="singleThread">
+            <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
+            <br/>
+            <el-row justify="start">
+              <el-col :span="16">
+                <el-tag type="warning" class="threadTag">由{{i.senderName}}发送</el-tag>
+              </el-col>
+              <el-col :span="1.5">
+                <el-tag  class="threadTag">{{i.clicks}}点击</el-tag>
+              </el-col>
+              <el-col :span="1.5">
+                <el-tag type="danger" class="threadTag">{{i.likes}}赞</el-tag>
+              </el-col>
+              <el-col :span="1.5">
+                <el-tag type="success" class="threadTag">{{i.reply}}回复</el-tag>
+              </el-col>
+              <el-col :span="3">
+                <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
+              </el-col>
+            </el-row>
+          </el-card>
+          <el-pagination v-model:current-page="nowPage" :page-size="5"
+                         :total="size" layout="total, prev, pager, next" @current-change="currentChange"/>
+        </el-tab-pane>
+        <el-tab-pane label="最热" name="second">
+          好冷
+        </el-tab-pane>
+      </el-tabs>
 
-    <el-tabs v-model="activeName">
-      <el-tab-pane label="最新" name="first">
-        <el-card shadow="hover" v-for="i in hollowList" class="singleThread">
-          <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
-          <br/>
-          <el-row justify="start">
-            <el-col :span="16">
-              <el-tag type="warning" class="threadTag">帖主：{{i.senderName}}</el-tag>
-            </el-col>
-            <el-col :span="1.5">
-              <el-tag  class="threadTag">{{i.clicks}}点击</el-tag>
-            </el-col>
-            <el-col :span="1.5">
-              <el-tag type="danger" class="threadTag">{{i.likes}}赞</el-tag>
-            </el-col>
 
-            <el-col :span="1.5">
-              <el-tag type="success" class="threadTag">{{i.reply}}回复</el-tag>
-            </el-col>
-            <el-col :span="3">
-              <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
-            </el-col>
-          </el-row>
-
-
-        </el-card>
-        <el-pagination :page-size="5" @current-change="currentChange"
-                       v-model:current-page="nowPage" layout="total, prev, pager, next" :total="size"/>
-
-
-      </el-tab-pane>
-
-      <el-tab-pane label="最热" name="second">
-        好冷
-      </el-tab-pane>
-    </el-tabs>
-  </template>
-
-</el-skeleton>
-
+    </template>
+  </el-skeleton>
 </template>
 
 <script lang="ts" setup>
@@ -57,6 +50,8 @@ const activeName=ref<string>("first");
 const loading =ref<boolean>(true);
 const nowPage=ref<number>(1);
 const size=ref<number>(-1);
+
+
 onMounted(()=>{
   func.getHollowByDesc(nowPage.value,func.getToken(initCookie)).then(r=>{
     if (r.data==="")
@@ -67,7 +62,6 @@ onMounted(()=>{
       return;
     }
     const callBack=func.getResult(r);
-
     hollowList.value=callBack.getData() as func.HollowThread[];
     size.value=Number(callBack.getMessage());
     loading.value=false;

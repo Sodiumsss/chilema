@@ -30,11 +30,7 @@ class User
         this.favor=favor;
         this.sex=sex;
     }
-    login()
-    {
-        const json=JSON.stringify(this);
-        return Connection.post("user","login",json,"login");
-    }
+
 
     forgetPW()
     {
@@ -52,7 +48,7 @@ class User
 //Token操作
 function saveToken(initCookie:any,callBack:func.R)//填入R类，保存token至cookies中
 {
-    initCookie.set("userToken",callBack.getMessage(),callBack.getData().toString()+"s");
+    initCookie.set("userToken",callBack.getMessage(),"86400s");
 }
 function getToken(initCookie:any)//从cookies中拿token
 {
@@ -60,6 +56,7 @@ function getToken(initCookie:any)//从cookies中拿token
 }
 function clearToken(initCookie:any)//从cookies中删token
 {
+    localStorage.clear();
     return initCookie.remove("userToken");
 }
 function existToken(initCookie:any) :boolean//cookies中token是否存在
@@ -92,11 +89,15 @@ function verifyUsername(username :string)
 
     return Connection.post("user","verifyUsername",username ,"verifyUsername");
 }
-
-
-function createUserByData(r:any) : func.User
+function login(username :string,password :string)
 {
-    const callback:func.R=func.getResult(r);
-    return callback.getData() as func.User;
+    const json=JSON.stringify(new User(username,password));
+    return Connection.post("user","login",json,"login");
 }
-export {setNickname,createUserByData,joinHollow,existToken,clearToken,getToken,getUserByToken,saveToken,create,User,verifyUsername}
+function createUserByData(r:func.R) : func.User
+{
+    return r.getData() as func.User;
+}
+export {login,setNickname,createUserByData
+    ,joinHollow,existToken,clearToken,getToken
+    ,getUserByToken,saveToken,create,User,verifyUsername}

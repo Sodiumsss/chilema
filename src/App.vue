@@ -16,7 +16,7 @@ onMounted(()=>{
   }
   else
   {
-    router.push('hello');
+    router.push('index');
   }
 })
 </script>

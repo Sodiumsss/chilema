@@ -30,33 +30,41 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue"
+import {computed, onMounted, ref, watch} from "vue"
 import * as func from "@/Set"
 import {ElMessage} from "element-plus";
 import router from "@/router";
+import {createUserByData} from "@/Set";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const loading=ref<boolean>(true);
 
 
-
-
 const topObjects=ref<Array<func.topObjects>>([]);
 
 onMounted(()=>{
-  document.title='吃了吗';
-  func.getUserByToken(func.getToken(initCookie)).then(r=>{
-    if (r.data==="")
+  if (!func.existToken(initCookie))
+  {
+    router.push('guest');
+    localStorage.clear();
+  }
+  else
+  {
+    const item =localStorage.getItem("user");
+    if (item ==null)
     {
       func.clearToken(initCookie);
       ElMessage.error({message:"请重新登录！",duration:2000});
+      localStorage.clear();
       router.push('guest');
-      return;
     }
-    user.value=func.createUserByData(r);
-
-    loading.value=false;
-  })
+    else
+    {
+      user.value= JSON.parse(localStorage.getItem("user") as string) as func.User;
+      console.log(user.value)
+      loading.value=false;
+    }
+  }
 
   if (func.test)
   {

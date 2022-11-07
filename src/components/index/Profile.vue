@@ -11,23 +11,31 @@
 
 <script lang="ts" setup>
 
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {ElMessage} from "element-plus";
 import * as func from "@/Set"
 import router from "@/router";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 
+
 onMounted(()=> {
   func.getUserByToken(func.getToken(initCookie)).then(r=>{
-    if (r.data==="")
+    const callBack=func.getResult(r);
+    if (!callBack.success())
     {
       func.clearToken(initCookie);
       ElMessage.error({message:"请重新登录！",duration:2000});
+      localStorage.clear();
       router.push('guest');
       return;
     }
-    user.value=func.createUserByData(r);
+    else
+    {
+      user.value=func.createUserByData(callBack);
+      localStorage.setItem("user",JSON.stringify(callBack.getData()));
+    }
+
   });
 
 })
@@ -38,6 +46,7 @@ const change = ()=>{
     if (res.data==="")
     {
       func.clearToken(initCookie);
+      localStorage.clear();
       ElMessage.error({message:"请重新登录！",duration:2000});
       router.push('guest');
       return;

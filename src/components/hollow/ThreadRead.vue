@@ -20,7 +20,9 @@
         </el-col>
 
         <el-col :span="15">
-          <el-tag  class="threadTag">帖主：{{thisHollow.senderName}}</el-tag>
+          <el-tag v-if="thisHollow.userId !== user.id" class="threadTag">由{{thisHollow.senderName}}发送</el-tag>
+          <el-tag v-if="thisHollow.userId === user.id" class="threadTag">你发送的！</el-tag>
+
         </el-col>
 
         <el-col :span="1.5">
@@ -82,11 +84,12 @@ const initCookie=func.initCookie();
 const loading =ref<boolean>(true);
 const threadId=ref<number>(-1);
 const thisHollow = ref <func.HollowThread>(new func.HollowThread());
-const thisHollowWithReply =ref<func.HollowThreadWithReply>(new func.HollowThreadWithReply());
+const thisHollowWithReply =ref<func.HollowThreadWithReplies>(new func.HollowThreadWithReplies());
 const user=ref<func.User>(new func.User);
 const replyVisible=ref<boolean>(false);
 const replyText=ref<string>("");
 const thisReplyList=ref<func.HollowReply[]>([]);
+
 onMounted(()=>{
   threadId.value=thisPage.$route.query.pageId;
   if (threadId.value===0)
@@ -95,7 +98,7 @@ onMounted(()=>{
   }
   else
   {
-    user.value=JSON.parse(<string>sessionStorage.getItem('user')) as func.User;
+    user.value=JSON.parse(localStorage.getItem('user') as string) as func.User;
     const UWH=new func.UserIDWithHollowID(threadId.value,user.value.id);
 
     func.getSingleHollow(UWH,func.getToken(initCookie)).then(r=>{
@@ -107,7 +110,7 @@ onMounted(()=>{
         return;
       }
       const callBack=func.getResult(r);
-      thisHollowWithReply.value=callBack.getData() as func.HollowThreadWithReply;
+      thisHollowWithReply.value=callBack.getData() as func.HollowThreadWithReplies;
       thisHollow.value=thisHollowWithReply.value.hollowThread;
       thisReplyList.value=thisHollowWithReply.value.hollowReplyList;
       loading.value=false;
