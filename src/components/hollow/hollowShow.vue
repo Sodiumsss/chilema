@@ -12,14 +12,14 @@
               <el-tag type="warning" class="threadTag">帖主：{{i.senderName}}</el-tag>
             </el-col>
             <el-col :span="1.5">
-              <el-tag  class="threadTag">点击{{i.clicks}}</el-tag>
+              <el-tag  class="threadTag">{{i.clicks}}点击</el-tag>
             </el-col>
             <el-col :span="1.5">
-              <el-tag type="danger" class="threadTag">赞{{i.likes}}</el-tag>
+              <el-tag type="danger" class="threadTag">{{i.likes}}赞</el-tag>
             </el-col>
 
             <el-col :span="1.5">
-              <el-tag type="success" class="threadTag">回复{{i.reply}}</el-tag>
+              <el-tag type="success" class="threadTag">{{i.reply}}回复</el-tag>
             </el-col>
             <el-col :span="3">
               <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>

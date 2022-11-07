@@ -5,7 +5,7 @@
 
           <a>标题</a>
           <br/><br/>
-          <el-input v-model="title"/>
+          <el-input show-word-limit maxlength="35" v-model="title"/>
           <el-divider/>
           <a>内容</a>
           <br/><br/>

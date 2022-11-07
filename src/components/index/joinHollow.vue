@@ -5,7 +5,7 @@
   </el-row>
   <el-row justify="center">
     <el-space direction="vertical">
-      <div >
+      <div  >
         <p>1.xxxxxxxxx</p>
         <p>2.xxxxxxxxxxx</p>
         <p>3.xxxxxxxxxxxxx</p>

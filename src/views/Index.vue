@@ -24,8 +24,6 @@
                   <el-menu-item index="hollow">
                     <template #title>树洞</template>
                   </el-menu-item>
-
-
                 <el-menu-item index="profile">
                   <template #title>账号管理</template>
                 </el-menu-item>
@@ -47,8 +45,10 @@
         <el-footer>
           <el-row justify="center">
             <el-space>
-              <el-link @click="aboutUs">关于我们</el-link>
+              <el-link @click="aboutUs">加入我们</el-link>
               <el-link @click="userReport">反馈信息</el-link>
+              <el-link @click="contract">联系管理员</el-link>
+
             </el-space>
           </el-row>
         </el-footer>
@@ -71,6 +71,9 @@ const userReport = ()=>{
   alert(1111);
 }
 
+const contract = ()=>{
+  alert(1111);
+}
 //菜单
 const handleSelect = (key: string, keyPath: string[]) => {
   switch (key)

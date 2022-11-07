@@ -4,7 +4,7 @@
     <el-space direction="vertical">
         账号<a style="font-weight: bold" v-text="user.username"/>
         目前积分<a v-text="user.credit"/>
-        称呼<el-input v-model="user.nickname"></el-input> <el-button @click="change">修改</el-button>
+        称呼<el-input show-word-limit maxlength="10" v-model="user.nickname"></el-input> <el-button @click="change">修改</el-button>
     </el-space>
   </el-row>
 </template>

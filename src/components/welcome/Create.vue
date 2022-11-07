@@ -108,7 +108,7 @@
                 <a>称呼<el-tooltip content="不用担心，称呼可以随时更改">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
-                <el-input v-model="nickname"></el-input>
+                <el-input show-word-limit maxlength="10" v-model="nickname"></el-input>
 
                 <a>账号<el-tooltip content="登录的凭证">
                 <el-icon><InfoFilled /></el-icon>

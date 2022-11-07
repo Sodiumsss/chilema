@@ -1,7 +1,7 @@
 <template>
   <el-row justify="center">
     <el-space direction="vertical">
-        <a style="font-weight: bold">你可以与我们一同将吃了吗做得更好，审核通过后你会获得积分奖励！</a>
+        <a style="font-weight: bold">你可以与我们一同将"吃了吗"做得更好，审核通过后你会获得积分奖励！</a>
 
     </el-space>
   </el-row>
