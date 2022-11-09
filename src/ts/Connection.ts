@@ -1,6 +1,6 @@
 import axios from "axios";
 import {Base64} from "js-base64";
-const ip = "10.107.2.58";
+const ip = "10.109.5.29";
 const port = "6324";
 
 async function get(kind :string,method :string,data :string="",token :string='-1',autoBase64 :boolean=false) {
@@ -29,4 +29,4 @@ async function post(kind: string, method: string, data: string = "",token :strin
             {headers:{'Content-Type': 'application/json','userToken':token}});
     }
 }
-export {get,post}
+export {port,ip,get,post}

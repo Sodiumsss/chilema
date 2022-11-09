@@ -8,20 +8,26 @@ class food{
     spicy :number;
     pepper :number;
     salt :number;
-    supply_time :string;
+    rate :number;
+    price :number
+    supplyTime :boolean[];
+    supplyLocation :string[];
     pic :any;
     description :string;
     constructor(id:any=-1,name:string="",acid:number=-1,sweet:number=-1,spicy:number=-1,pepper:number=-1
-                ,salt:number=-1,supply_time:string=""
-        ,pic:any="",description :string="") {
+                ,salt:number=-1,supplyTime:boolean[]=[]
+        ,pic:any="",description :string="",rate:number=0,price:number=-1,supplyLocation:string[]=[]) {
         this.id=id;
         this.name=name;
         this.acid=acid;
+        this.rate=rate;
         this.sweet=sweet;
         this.spicy=spicy;
         this.pepper=pepper;
         this.salt=salt;
-        this.supply_time=supply_time;
+        this.supplyTime=supplyTime;
+        this.price=price;
+        this.supplyLocation=supplyLocation;
         this.pic=pic;
         this.description=description;
     }
