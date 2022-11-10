@@ -134,11 +134,8 @@ const reply=()=>{
     if (callBack.success())
     {
       ElMessage.success({message:"回复成功！",duration:2000});
-      const temp = new func.HollowReply(-1,
-          -1,-1,getDiffTime(new Date().toString()),replyText.value,user.value.nickname);
-      thisReplyList.value.push(temp);
-      replyText.value="";
-      replyVisible.value = false;
+
+      router.push({path:'/r',query:{j:'threadRead?pageId='+thisHollow.value.id}});
     }
     else
     {
@@ -146,7 +143,7 @@ const reply=()=>{
 
     }
 
-  }).catch(r=>{
+  }).catch(()=>{
     ElMessage.error({message:"网络连接出错！",duration:2000});
   })
 }
@@ -245,6 +242,7 @@ const copyLink=()=>{
   document.body.appendChild(input); // 添加临时实例
   input.select(); // 选择实例内容
   document.execCommand("Copy"); // 执行复制
+  navigator.clipboard.writeText(input.value)
   document.body.removeChild(input); // 删除临时实例
   ElNotification.success({message:"已复制链接！",duration:1000,showClose:false});
 }

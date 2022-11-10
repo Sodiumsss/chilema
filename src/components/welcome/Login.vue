@@ -57,7 +57,7 @@ function login()
       func.saveToken(initCookie,callBack);
       func.setAlready(initCookie);
       localStorage.setItem("user",JSON.stringify(callBack.getData()))
-      router.push('index');
+      router.push('hello');
     }
     else
     {

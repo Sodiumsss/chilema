@@ -11,8 +11,8 @@ const jumpName=ref<string>("");
 
 const thisPage=func.getThis();
 onMounted(()=>{
-  console.log("redirect!");
   jumpName.value=thisPage.$route.query.j;
+  console.log("let's go to "+jumpName.value)
   router.push(jumpName.value);
 
 })

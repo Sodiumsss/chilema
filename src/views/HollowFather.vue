@@ -49,7 +49,6 @@ import * as func from "@/Set";
 import {onMounted, ref} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
-import {createUserByData} from "@/Set";
 const initCookie=func.initCookie();
 const user = ref<func.User>(new func.User());
 const loading =ref<boolean>(true);

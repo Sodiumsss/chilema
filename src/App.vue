@@ -10,14 +10,7 @@ import * as func from "@/Set"
 
 const initCookie=func.initCookie();
 onMounted(()=>{
-  if (!func.existToken(initCookie))
-  {
-    router.push('guest');
-  }
-  else
-  {
-    router.push('index');
-  }
+
 })
 </script>
 

@@ -58,8 +58,9 @@ const join = ()=>{
 
 onMounted(()=>{
   func.getUserByToken(func.getToken(initCookie)).then((r)=>{
-    user.value=func.createUserByData(r);
-    if(user.value.hollow)
+    const callBack=func.getResult(r);
+    user.value=func.createUserByData(callBack);
+    if(user.value.hollow===1)
     {
       router.push('hollow');
     }

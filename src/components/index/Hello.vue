@@ -61,7 +61,6 @@ onMounted(()=>{
     else
     {
       user.value= JSON.parse(localStorage.getItem("user") as string) as func.User;
-      console.log(user.value)
       loading.value=false;
     }
   }

@@ -89,10 +89,11 @@
                       <div>
                         <el-row style="margin-top: 10px;" justify="center">
                           <el-tag>
-                            食物评分
+                            <a v-if="comment.length===0">无人评价</a>
+                            <a v-if="comment.length!==0" v-text="rateText"/>
                           </el-tag>
                         </el-row>
-                        <el-row justify="center">
+                        <el-row v-if="comment.length!==0" justify="center">
                           <el-progress :stroke-width="20" style="width: 350px;margin-top: 10px;"
                                        :format="rateFormat" :percentage="food.rate"
                                        :color="rateColor" :text-inside="true"
@@ -101,7 +102,9 @@
                       </div>
                       <div>
                         <el-row style="margin-top: 10px;" justify="center">
-                          <el-tag>供应时间</el-tag>
+                          <el-tag>
+                            供应时间
+                          </el-tag>
                         </el-row>
 
                         <el-row justify="center">
@@ -145,46 +148,91 @@
               </el-col>
             </el-row>
             <br/>
-<!--            <el-row justify="space-between">-->
-<!--              <el-col :span="11">-->
-<!--                <el-card>-->
-<!--                  111-->
-<!--                </el-card>-->
-<!--              </el-col>-->
-<!--              <el-col :span="11">-->
-<!--                <el-card>-->
-<!--                  111-->
-<!--                </el-card>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
 
 
+            <el-dialog v-model="rateVisible">
+              <template v-if="alreadyRate===false" #header>填写评价</template>
+              <template v-if="alreadyRate===true" #header>修改评价</template>
+
+              <a>你的评分</a><br/><br/>
+              <el-input-number :value-on-clear="0" :min="0" :max="100" v-model="rateNumber"/>
+              &nbsp;{{hoshiText}}颗星星(评分为0~100，显示时会换算为0~5颗星)
+              <br/><br/>
+              <a>你的评论</a><br/><br/>
+              <el-input show-word-limit :maxlength="200" type="textarea" v-model="rateContent"/>
+              <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="rateVisible = false">取消</el-button>
+         <el-button type="danger" v-if="alreadyRate===true" @click="deleteRate">
+          删除
+        </el-button>
+        <el-button type="primary" v-if="alreadyRate===false" @click="rate">
+          发送
+        </el-button>
+         <el-button type="warning" v-if="alreadyRate===true" @click="rate">
+          修改
+        </el-button>
+      </span>
+              </template>
+            </el-dialog>
           </template>
         </el-skeleton>
-
-
       </el-card>
 
       <el-card style="margin-top: 30px;">
-        <a style="font-size: larger; font-weight: bold">看看大家的评论吧！</a>
-        <br/>
-        <a>未加载......</a>
+        <a style="font-size: larger; font-weight: bold">评价</a>
+        <br/><br/>
+        <el-skeleton animated :loading="loading2">
+          <el-card shadow="never" v-for="(i,index) in comment" class="singleReply">
+            <el-row style="margin-bottom: 2px;" :gutter="10" justify="start">
+              <el-col :span="16">
+                <el-link style="font-size: medium">
+                  {{i.userId===user.id ? "你自己" : "由"+i.senderName+"发送"}}
+                </el-link>
+              </el-col>
+
+              <el-col :span="6"/>
+              <el-col :span="2">
+                <el-row justify="end">
+                  #{{index+1}}
+
+                </el-row>
+              </el-col>
+            </el-row>
+            <br/>
+            <a style=" margin-left: 12px;">{{i.content}}</a>
+            <el-row justify="end">
+              <el-col :span="17"/>
+
+              <el-col :span="4">
+                <el-row justify="end">
+                  <el-rate show-score disabled score-template="{value}" v-model="i.rate"/>
+
+                </el-row>
+
+              </el-col>
+
+            </el-row>
+
+          </el-card>
+          <el-affix  position="bottom" :offset="10">
+            <el-row justify="end">
+              <el-tooltip content="反馈信息" placement="top-end">
+                <el-button size="large" circle type="primary" :icon="Message" />
+              </el-tooltip>
+              <el-tooltip content="评价" placement="top-end">
+                <el-button size="large" @click="writeRate" circle :icon="ChatLineSquare"  type="warning"/>
+              </el-tooltip>
+
+              <el-tooltip content="回到顶部"  placement="top-end">
+                <el-button size="large" @click="goTop" circle :icon="ArrowUpBold" type="info" />
+              </el-tooltip>
+            </el-row>
+          </el-affix>
+        </el-skeleton>
       </el-card>
 
-      <el-affix  position="bottom" :offset="30">
-        <el-row justify="end">
-          <el-tooltip content="反馈信息或错误" placement="top-end">
-            <el-button size="large" circle type="primary" :icon="Message" />
-          </el-tooltip>
-          <el-tooltip content="给出评价" placement="top-end">
-            <el-button size="large" circle :icon="ChatLineSquare"  type="warning"/>
-          </el-tooltip>
 
-          <el-tooltip content="回到顶部"  placement="top-end">
-            <el-button size="large" @click="goTop" circle :icon="ArrowUpBold" type="info" />
-          </el-tooltip>
-        </el-row>
-      </el-affix>
     </el-main>
 
 
@@ -197,23 +245,94 @@
 import * as func from "@/Set"
 import {computed, onMounted, ref, watch} from "vue";
 import router from "@/router";
-import {ElMessage, ElNotification} from "element-plus";
+import { ElMessage, ElMessageBox, ElNotification} from "element-plus";
 import {ArrowUpBold,ChatLineSquare,Message} from "@element-plus/icons-vue";
+
 const initCookie = func.initCookie();
 const food = ref <func.food>(new func.food("-1","加载中......"));
 const imgURL =ref <string>("");
 const loading =ref<boolean>(true);
+const loading2 =ref<boolean>(true);
 const activeName =ref<string>("1");
+const rateText = ref ("食物评分");
+const rateVisible=ref<boolean>(false);
+const rateContent=ref("");
+const rateNumber=ref(0);
+
+const hoshiText =computed(()=>{
+  return rateNumber.value/20;
+})
+const writeRate=()=>{
+  rateVisible.value=true;
+}
+
+const deleteRate = ()=>{
+  ElMessageBox.confirm(
+      '你确定要删除吗?',
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  ).then(() =>
+  {
+    func.deleteMyselfComment(food.value.id,func.getToken(initCookie)).then(r=>{
+      const callBack=func.getResult(r);
+      if (callBack.success())
+      {
+        ElMessage.success({message:"删除成功！",duration:2000});
+        router.push({path:'/r',query:{j:'food?id='+food.value.id}});
+      }
+      else
+      {
+        ElMessage.error({message:"删除失败！",duration:2000});
+      }
+    }).catch(()=>{
+      ElMessage.error({message:"网络连接出错！",duration:2000});
+    })
+
+
+      })
+
+
+
+}
+
+const rate = ()=>{
+  let comment = new func.comment(food.value.id,user.value.id,rateContent.value,rateNumber.value,user.value.nickname);
+  func.sendComment(comment,func.getToken(initCookie)).then(r=>{
+    const callBack=func.getResult(r);
+    if (callBack.success())
+    {
+      ElMessage.success({message:"评价成功！",duration:2000});
+      router.push({path:'/r',query:{j:'food?id='+food.value.id}});
+    }
+    else
+    {
+      ElMessage.success({message:"评价失败！",duration:2000});
+
+    }
+  }).catch(()=>{
+    ElMessage.error({message:"网络连接出错！",duration:2000});
+  })
+
+}
+
+const comment =ref<func.comment[]>([]);
 const showPage = ()=>{
   loading.value=false;
 }
+const user =ref <func.User>(new func.User);
+const alreadyRate =ref (false);
+
+
 const calTime = (index :any)=>
 {
   if (index==0)return "早上";
   if (index==1)return "中午";
   if (index==2)return "晚上";
   if (index==3)return "宵夜";
-
 }
 const calLocal =computed(()=>{
   let tmp ="";
@@ -243,6 +362,7 @@ const falseRef=ref(false);
 watch(falseRef,()=>{
   falseRef.value=false;
 })
+
 
 
 const kindColors = (percentage: number) =>
@@ -306,6 +426,7 @@ const rateFormat = (percentage: number) =>
   if (percentage<=100)return '神中神'+"("+percentage+")";
 
 }
+const thisPage=func.getThis();
 const rateColor = (percentage: number)=>
 {
   if (percentage<60)return '#F56C6C';
@@ -319,27 +440,79 @@ const rateColor = (percentage: number)=>
 }
 
 onMounted(()=>{
-  if (func.test)
+  if (!func.existToken(initCookie))
   {
-    func.getSingleFood("1",func.getToken(initCookie)).then(r=>{
-      const callBack=func.getResult(r);
-      if (callBack.success())
-      {
-        food.value=callBack.getData() as func.food;
-        imgURL.value="http://"+func.ip+":"+func.port+food.value.pic;
-        food.value.rate=Math.round (food.value.rate * 10) / 10;
-        console.log(food.value)
-      }
-      else
-      {
-        func.clearToken(initCookie);
-        localStorage.clear();
-        ElMessage.error({message:"请重新登录！",duration:2000});
-        router.push('guest');}
-    }).catch(()=>{
-
-    })
+    router.push('guest');
+    localStorage.clear();
   }
+  else
+  {
+    const item =localStorage.getItem("user");
+    if (item ==null)
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      localStorage.clear();
+      router.push('guest');
+    }
+    else
+    {
+      food.value.id=thisPage.$route.query.id;
+      user.value= JSON.parse(localStorage.getItem("user") as string) as func.User;
+        func.getSingleFood(food.value.id,func.getToken(initCookie)).then(r=>{
+          const callBack=func.getResult(r);
+          if (callBack.success())
+          {
+            food.value=callBack.getData() as func.food;
+            imgURL.value="http://"+func.ip+":"+func.port+food.value.pic;
+            food.value.rate=Math.round (food.value.rate * 10) / 10;
+
+            func.getCommentList(food.value.id,func.getToken(initCookie)).then(r=>{
+              const callBack=func.getResult(r);
+              if (callBack.success())
+              {
+                comment.value=callBack.getData() as func.comment[];
+                for (let i of comment.value)
+                {
+                  if (i.userId===user.value.id)
+                  {
+                    alreadyRate.value=true;
+                    rateNumber.value=i.rate;
+                    rateContent.value=i.content;
+                  }
+                  i.rate=i.rate/20;
+
+                }
+                rateText.value="食物评分(共"+comment.value.length+"人评)";
+                loading2.value=false;
+
+
+              }
+              else
+              {
+                func.clearToken(initCookie);
+                localStorage.clear();
+                ElMessage.error({message:"请重新登录！",duration:2000});
+                router.push('guest');
+              }
+            })
+          }
+          else
+          {
+            func.clearToken(initCookie);
+            localStorage.clear();
+            ElMessage.error({message:"请重新登录！",duration:2000});
+            router.push('guest');}
+        }).catch(()=>{
+          router.push('index');
+        })
+      }
+
+  }
+
+
+
+
 
 })
 const backHello = ()=>{
@@ -351,6 +524,7 @@ const copyLink=()=>{
   document.body.appendChild(input); // 添加临时实例
   input.select(); // 选择实例内容
   document.execCommand("Copy"); // 执行复制
+  // navigator.clipboard.writeText(input.value)
   document.body.removeChild(input); // 删除临时实例
   ElNotification.success({message:"已复制链接！",duration:1000,showClose:false});
 }
@@ -361,5 +535,7 @@ const copyLink=()=>{
   background-color: #63BF8E;
   height: 100%;
 }
-
+.singleReply{
+  margin-bottom: 10px;
+}
 </style>

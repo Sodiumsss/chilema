@@ -39,6 +39,14 @@
 
 
     </el-tab-pane>
+    <el-tab-pane label="按ID" name="5">
+      <el-row justify="center">
+        <el-space  direction="vertical">
+          输入你想要查询的ID！<el-input :prefix-icon="Search" clearable v-model="foodId"></el-input>
+          <el-button @click="idSearch">查询</el-button>
+        </el-space>
+      </el-row>
+    </el-tab-pane>
   </el-tabs>
 
 
@@ -50,21 +58,20 @@
 import {ref} from "vue";
 
 import {Search} from '@element-plus/icons-vue'
+import router from "@/router";
 const nowTab=ref<string>('1');
-
-//按名称
 const foodName=ref<string>('');
 
-//
+const foodId=ref<number>();
+const idSearch=()=>
+{
+  router.push({path:'/food',query:{id:foodId.value}});
+}
 
-//按食堂
+
+
 const canteenName=ref<string>('');
-
-//按时段
 const time=ref<string>('');
-
-
-
 const tabClick=(pane :any)=>{
 
 }

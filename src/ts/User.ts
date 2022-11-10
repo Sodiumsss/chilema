@@ -38,8 +38,6 @@ class User
         return Connection.post("user","forgetPW",json,"forgetPW");
     }
 
-
-
 }
 
 

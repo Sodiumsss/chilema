@@ -84,8 +84,6 @@ onMounted(()=>{
       else
       {
         localStorage.setItem("user",JSON.stringify(createUserByData(callBack)));
-        router.push('hello');
-
       }
 
     })
