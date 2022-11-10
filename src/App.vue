@@ -5,7 +5,6 @@
 
 <script lang="ts" setup>
 import {onMounted} from "vue";
-import router from "@/router";
 import * as func from "@/Set"
 
 const initCookie=func.initCookie();
