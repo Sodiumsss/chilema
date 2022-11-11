@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-main>
-      <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
+      <el-card >
             <el-row  justify="center">
               <p v-text="getText"></p>
               <el-divider class="divider"></el-divider>

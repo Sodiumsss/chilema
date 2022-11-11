@@ -5,6 +5,9 @@
         <el-space  direction="vertical">
           输入你想要查询的大致名称！<el-input :prefix-icon="Search" clearable v-model="foodName"></el-input>
           <el-button>查询</el-button>
+
+          <el-button @click="testJump">进入唯一的食物页</el-button>
+
         </el-space>
       </el-row>
     </el-tab-pane>
@@ -68,6 +71,9 @@ const idSearch=()=>
   router.push({path:'/food',query:{id:foodId.value}});
 }
 
+const testJump=()=>{
+  router.push('/food?id=1')
+}
 
 
 const canteenName=ref<string>('');

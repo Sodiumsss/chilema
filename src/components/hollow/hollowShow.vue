@@ -7,21 +7,22 @@
             <el-link @click="joinThread(i.id)" style="font-size: large;">{{i.title}}</el-link>
             <br/>
             <el-row justify="start">
-              <el-col :span="16">
-                <el-tag type="warning" class="threadTag">由{{i.senderName}}发送</el-tag>
+              <el-col :span="12">
+                <el-tag v-if="i.userId===user.id"  class="threadTag">你发送的</el-tag>
+                <el-tag v-if="i.userId!==user.id" type="warning" class="threadTag">由{{i.senderName}}发送</el-tag>
               </el-col>
-              <el-col :span="1.5">
-                <el-tag  class="threadTag">{{i.clicks}}点击</el-tag>
+              <el-col :span="12">
+                <el-row justify="end">
+                    <el-tag class="threadTag">{{i.clicks}}点击</el-tag>
+                    <el-tag type="danger" class="threadTag">{{i.likes}}赞</el-tag>
+                    <el-tag type="success" class="threadTag">{{i.reply}}回复</el-tag>
+                  <el-tag v-if="i.updateTime==null" type="info" class="threadTag">{{getDiffTime(i.createTime)}}发表</el-tag>
+                  <el-tag v-if="i.updateTime!==null" type="info" class="threadTag">{{getDiffTime(i.updateTime)}}有人回复</el-tag>
+                </el-row>
+
               </el-col>
-              <el-col :span="1.5">
-                <el-tag type="danger" class="threadTag">{{i.likes}}赞</el-tag>
-              </el-col>
-              <el-col :span="1.5">
-                <el-tag type="success" class="threadTag">{{i.reply}}回复</el-tag>
-              </el-col>
-              <el-col :span="3">
-                <el-tag type="info" class="threadTag">{{getDiffTime(i.createTime)}}</el-tag>
-              </el-col>
+
+
             </el-row>
           </el-card>
           <el-pagination v-model:current-page="nowPage" :page-size="5"
@@ -53,19 +54,49 @@ const size=ref<number>(-1);
 
 
 onMounted(()=>{
-  func.getHollowByDesc(nowPage.value,func.getToken(initCookie)).then(r=>{
-    if (r.data==="")
-    {
-      func.clearToken(initCookie);
-      ElMessage.error({message:"请重新登录！",duration:2000});
-      router.push('guest');
-      return;
-    }
-    const callBack=func.getResult(r);
-    hollowList.value=callBack.getData() as func.HollowThread[];
-    size.value=Number(callBack.getMessage());
-    loading.value=false;
-  })
+      if (!func.existToken(initCookie))
+      {
+        localStorage.clear();
+        router.push('guest');
+      }
+      else
+      {
+        const item = localStorage.getItem("user");
+        if (item==null)
+        {
+          func.clearToken(initCookie);
+          ElMessage.error({message:"请重新登录！",duration:2000});
+        }
+        else
+        {
+          user.value=JSON.parse(localStorage.getItem("user") as string)as func.User;
+          if (user.value.hollow===0)
+          {
+            router.push('joinHollow');
+          }
+          else
+          {
+
+            func.getHollowByDesc(nowPage.value,func.getToken(initCookie)).then(r=>{
+              if (r.data==="")
+              {
+                func.clearToken(initCookie);
+                ElMessage.error({message:"请重新登录！",duration:2000});
+                router.push('guest');
+                return;
+              }
+              const callBack=func.getResult(r);
+              hollowList.value=callBack.getData() as func.HollowThread[];
+              console.log(hollowList.value)
+              size.value=Number(callBack.getMessage());
+              loading.value=false;
+            })
+
+          }
+        }
+      }
+
+
 }
 
 )
@@ -106,11 +137,11 @@ const getDiffTime=(oldTime : string)=>
   let backString ="";
   if (days>0)
   {
-    backString+=days+"天 ";
+    backString+=days+"天";
   }
   if (h>0)
   {
-    backString+=h+"小时 ";
+    backString+=h+"小时";
   }
   if (min>0)
   {
@@ -132,7 +163,6 @@ const getDiffTime=(oldTime : string)=>
 .el-container { height: 100%; background-color: #63BF8E }
 .el-header, .el-footer {  text-align: center; line-height: 60px; }
 .el-aside { margin-top: 20px;  }
-.el-main {  }
 .el-menu { background-color: #d3dce6; }
 .aside-card{ margin-left: 10px;}
 .main-card{ margin-left: 10px;}

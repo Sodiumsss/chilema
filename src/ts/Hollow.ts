@@ -119,5 +119,13 @@ function reply(object :UserHollowText, token:string)
     const json=JSON.stringify(object);
     return Connection.post("hollow","reply",json,token);
 }
-export {HollowReply,HollowThreadWithReplies,reply,UserHollowText,setLike,cancelLike,UserIDWithHollowID
+function deleteMyselfById(id :any, token:string)
+{
+    const json=JSON.stringify(id);
+    return Connection.post("hollow","deleteMyselfById",json,token);
+}
+
+
+
+export {deleteMyselfById,HollowReply,HollowThreadWithReplies,reply,UserHollowText,setLike,cancelLike,UserIDWithHollowID
     ,getSingleHollow,getHollowByDesc,HollowThread,}

@@ -67,7 +67,6 @@ onMounted(()=>{
 
   if (func.test)
   {
-    console.log('TestMode');
     for (let i=0;i<3;i++)
     {
       let tmp =new func.topObjects;

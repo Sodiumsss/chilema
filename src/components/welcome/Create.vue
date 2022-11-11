@@ -1,7 +1,7 @@
 <template>
     <el-container v-loading="loading">
       <el-main>
-        <el-card :style="{borderRadius:'var(--el-border-radius-round'}">
+        <el-card>
           <!--进度条-->
           <el-steps :active="nowStep" finish-status="success">
             <el-step title="味道"/>
@@ -9,10 +9,8 @@
             <el-step title="三餐"/>
             <el-step title="创建"/>
           </el-steps>
-          <el-alert center effect="dark" type="info">
-           <p>我们提供的选项可能没有到达你的预期，但是没关系，我们正在改进！</p>
 
-          </el-alert>
+
           <!--taste-->
           <div v-if="nowStep===0">
             <el-row justify="center"><p>你喜欢/讨厌什么？</p></el-row>
@@ -99,18 +97,17 @@
             <el-form>
             <el-row justify="center">
               <el-space direction="vertical">
-
                 <a>性别</a>
                 <el-radio-group v-model="sex">
                   <el-radio label='1'>男</el-radio>
                   <el-radio label='2'>女</el-radio>
                 </el-radio-group>
-                <a>称呼<el-tooltip content="不用担心，称呼可以随时更改">
+                <a>称呼<el-tooltip placement="top" content="不用担心，称呼可以随时更改，但不能和别人重复！">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
-                <el-input show-word-limit maxlength="10" v-model="nickname"></el-input>
+                <el-input show-word-limit maxlength="15" v-model="nickname"></el-input>
 
-                <a>账号<el-tooltip content="登录的凭证">
+                <a>账号<el-tooltip placement="top" content="登录的凭证">
                 <el-icon><InfoFilled /></el-icon>
               </el-tooltip></a>
 
@@ -124,11 +121,11 @@
                 <el-input  show-password v-model="password"></el-input>
                 <span v-if="passwordInfoState"><el-icon color="red"><CloseBold /></el-icon><a style="font-size: small">请包含6~20位数字与字母</a></span>
 
-                <a>学号后五位<el-tooltip content="找回账号的重要部分">
+                <a>学号后五位<el-tooltip placement="top" content="找回账号的重要部分">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
                 <el-input  show-word-limit maxlength="5" v-model="schoolId"></el-input>
-                <a>出生年份<el-tooltip content="找回账号的重要部分">
+                <a>出生年份<el-tooltip placement="top" content="找回账号的重要部分">
                   <el-icon><InfoFilled /></el-icon>
                 </el-tooltip></a>
                 <el-input show-word-limit maxlength="4" v-model="birthYear"></el-input>
@@ -162,7 +159,37 @@ const md5 =require('js-md5');
 //属性
 const username = ref<string>("");
 const password = ref<string>("");
-const nickname = ref<string>("同学");
+const nickname = ref<string>("");
+const randomNickname = ()=>{
+  const numberRange = 10000 - 1000
+  const numberValue = Math.floor(Math.random() * numberRange) + 1000;
+  const textRange = 10 - 1
+  const textValue = Math.floor(Math.random() * textRange) + 1;
+  switch (textValue){
+
+
+    case 1:
+      return "同学#"+numberValue;
+    case 2:
+      return "西瓜#"+numberValue;
+    case 3:
+      return "苹果#"+numberValue;
+    case 4:
+      return "超人#"+numberValue;
+    case 5:
+      return "鲤鱼#"+numberValue;
+    case 6:
+      return "柠檬#"+numberValue;
+    case 7:
+      return "无名氏#"+numberValue;
+    case 8:
+      return "肥皂#"+numberValue;
+    case 9:
+      return "吹风机#"+numberValue;
+  }
+}
+
+
 const schoolId = ref<string>("");
 const birthYear = ref<string>("");
 //偏好
@@ -183,7 +210,7 @@ const usernameInfoIcon=ref<boolean>(true);
 const passwordInfoState=ref<boolean>(false);
 
 //提示
-onMounted(()=> {document.title='请填写信息';})
+onMounted(()=> {document.title='请填写信息';nickname.value=randomNickname()!;})
 //监听密码
 watch(password,(N)=>{
   if (password.value==="")
@@ -319,10 +346,7 @@ function forwardStep()
           ElMessage.error({message:"纯数字！",duration:2300});
           return;
         }
-        if (Number(birthYear.value) < 1960 || Number(birthYear.value) > 2010)
-        {
-          ElMessage.info({message:"显然你的出生年不太真实，但请你记住你刚才所填写的。",duration:2300});
-        }
+
       }
       break;
   }
@@ -340,6 +364,7 @@ function forwardStep()
 
 function sendToServer()
 {
+
   ElMessageBox.confirm('我们将会把你刚才填写的信息上传至服务器，并且使用Cookies在你的本地存储一些数据。','警告',{
     confirmButtonText:'同意',
     cancelButtonText:'不同意',
@@ -355,12 +380,19 @@ function sendToServer()
       const callBack=func.getResult(res);
       if (callBack.success())
       {
-        ElMessage.success({message:"注册成功！",duration:2000});
+        if (Number(birthYear.value) < 1960 || Number(birthYear.value) > 2010)
+        {
+          ElMessage.info({message:"注册成功！但显然你的出生年不太真实，请你记住你刚才所填写的。",duration:2300});
+        }
+        else
+        {
+          ElMessage.success({message:"注册成功！",duration:2000});
+        }
         router.push('guest');
       }
       else
       {
-        ElMessage.error({message:"注册失败，请检测所填写的内容！",duration:2000});
+        ElMessage.error({message:"注册失败，换个称呼试试？",duration:2000});
       }})
     ).catch(()=>{
       ElMessage.error({message:"网络连接出错！",duration:2000});

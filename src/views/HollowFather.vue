@@ -80,7 +80,6 @@ onMounted(()=> {
           else
           {
             loading.value=false;
-            router.push('hollow');
           }
         }
       }
@@ -125,7 +124,6 @@ const sendThread=()=>{
 .el-container { height: 100%; background-color: #63BF8E }
 .el-header, .el-footer {  text-align: center; line-height: 60px; }
 .el-aside { margin-top: 20px;  }
-.el-main {  }
 .el-menu { background-color: #d3dce6; }
 .aside-card{ margin-left: 10px;}
 .main-card{ margin-left: 10px;}

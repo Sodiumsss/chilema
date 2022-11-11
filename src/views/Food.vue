@@ -8,7 +8,8 @@
 
       <el-link id="index" @click="backHello">首页</el-link>
       <a style="margin-left: 10px;margin-right: 10px;">></a>
-      <el-link style="font-size: larger" @click="copyLink">{{ food.name }}</el-link>
+        <el-link v-if="loading===true" style="font-size: larger" @click="copyLink">加载中......</el-link>
+        <el-link v-if="loading===false" style="font-size: larger" @click="copyLink">{{ food.name }}</el-link>
       <br/><br/>
         <el-row justify="center">
           <el-image :src="imgURL" @load="showPage">
@@ -159,7 +160,7 @@
               &nbsp;{{hoshiText}}颗星星(评分为0~100，显示时会换算为0~5颗星)
               <br/><br/>
               <a>你的评论</a><br/><br/>
-              <el-input show-word-limit :maxlength="200" type="textarea" v-model="rateContent"/>
+              <el-input :rows="4" show-word-limit :maxlength="200" type="textarea" v-model="rateContent"/>
               <template #footer>
       <span class="dialog-footer">
         <el-button @click="rateVisible = false">取消</el-button>
@@ -247,7 +248,6 @@ import {computed, onMounted, ref, watch} from "vue";
 import router from "@/router";
 import { ElMessage, ElMessageBox, ElNotification} from "element-plus";
 import {ArrowUpBold,ChatLineSquare,Message} from "@element-plus/icons-vue";
-
 const initCookie = func.initCookie();
 const food = ref <func.food>(new func.food("-1","加载中......"));
 const imgURL =ref <string>("");
@@ -258,6 +258,16 @@ const rateText = ref ("食物评分");
 const rateVisible=ref<boolean>(false);
 const rateContent=ref("");
 const rateNumber=ref(0);
+const comment =ref<func.comment[]>([]);
+const showPage = ()=>{
+  loading.value=false;
+}
+const user =ref <func.User>(new func.User);
+const alreadyRate =ref (false);
+const thisPage=func.getThis();
+
+
+
 
 const hoshiText =computed(()=>{
   return rateNumber.value/20;
@@ -265,7 +275,6 @@ const hoshiText =computed(()=>{
 const writeRate=()=>{
   rateVisible.value=true;
 }
-
 const deleteRate = ()=>{
   ElMessageBox.confirm(
       '你确定要删除吗?',
@@ -298,7 +307,6 @@ const deleteRate = ()=>{
 
 
 }
-
 const rate = ()=>{
   let comment = new func.comment(food.value.id,user.value.id,rateContent.value,rateNumber.value,user.value.nickname);
   func.sendComment(comment,func.getToken(initCookie)).then(r=>{
@@ -319,13 +327,114 @@ const rate = ()=>{
 
 }
 
-const comment =ref<func.comment[]>([]);
-const showPage = ()=>{
-  loading.value=false;
-}
-const user =ref <func.User>(new func.User);
-const alreadyRate =ref (false);
 
+
+
+const goTop=()=>{
+  const tmp =document.getElementById('index') ;
+  tmp!.scrollIntoView();
+}
+const calLocal =computed(()=>{
+  let tmp ="";
+  for (let i in food.value.supplyLocation)
+  {
+    tmp+=food.value.supplyLocation[i];
+    if (Number(i)!==food.value.supplyLocation.length-1)
+    {
+      tmp+="，"
+    }
+  }
+  return tmp;
+})
+onMounted(()=>{
+  if (!func.existToken(initCookie))
+  {
+    router.push('guest');
+    localStorage.clear();
+  }
+  else
+  {
+    const item =localStorage.getItem("user");
+    if (item ==null)
+    {
+      func.clearToken(initCookie);
+      ElMessage.error({message:"请重新登录！",duration:2000});
+      localStorage.clear();
+      router.push('guest');
+    }
+    else
+    {
+      if (thisPage.$route.query.id!=null)
+      {
+        food.value.id=thisPage.$route.query.id;
+        user.value= JSON.parse(localStorage.getItem("user") as string) as func.User;
+        func.getSingleFood(food.value.id,func.getToken(initCookie)).then(r=>{
+          const callBack=func.getResult(r);
+          if (callBack.success())
+          {
+            food.value=callBack.getData() as func.food;
+            imgURL.value="http://"+func.ip+":"+func.port+food.value.pic;
+            food.value.rate=Math.round (food.value.rate * 10) / 10;
+
+            func.getCommentList(food.value.id,func.getToken(initCookie)).then(r=>{
+              const callBack=func.getResult(r);
+              if (callBack.success())
+              {
+                comment.value=callBack.getData() as func.comment[];
+                for (let i of comment.value)
+                {
+                  if (i.userId===user.value.id)
+                  {
+                    alreadyRate.value=true;
+                    rateNumber.value=i.rate;
+                    rateContent.value=i.content;
+                  }
+                  i.rate=i.rate/20;
+
+                }
+                rateText.value="食物评分(共"+comment.value.length+"人评)";
+                loading2.value=false;
+
+
+              }
+              else
+              {
+                func.clearToken(initCookie);
+                localStorage.clear();
+                ElMessage.error({message:"请重新登录！",duration:2000});
+                router.push('guest');
+              }
+            })
+          }
+          else
+          {
+            func.clearToken(initCookie);
+            localStorage.clear();
+            ElMessage.error({message:"请重新登录！",duration:2000});
+            router.push('guest');}
+        }).catch(()=>{
+          router.push('hello');
+        })
+      }
+      else
+      {
+        router.push('hello');
+      }
+      }
+  }
+})
+const backHello = ()=>{
+  router.push('hello');
+}
+const copyLink=()=>{
+  let input = document.createElement("input"); // 创建input对象
+  input.value = window.location.href; // 设置复制内容
+  document.body.appendChild(input); // 添加临时实例
+  input.select(); // 选择实例内容
+  document.execCommand("Copy"); // 执行复制
+  document.body.removeChild(input); // 删除临时实例
+  ElNotification.success({message:"已复制链接！",duration:1000,showClose:false});
+}
 
 const calTime = (index :any)=>
 {
@@ -334,37 +443,17 @@ const calTime = (index :any)=>
   if (index==2)return "晚上";
   if (index==3)return "宵夜";
 }
-const calLocal =computed(()=>{
-  let tmp ="";
-  for (let i in food.value.supplyLocation)
-  {
-    tmp+=food.value.supplyLocation[i];
+const rateColor = (percentage: number)=>
+{
+  if (percentage<60)return '#F56C6C';
 
+  if (percentage<75)return '#E6A23C';
+  if (percentage<85)return '#409EFF';
 
-    if (Number(i)!==food.value.supplyLocation.length-1)
-    {
-      tmp+="，"
-    }
-
-
-  }
-  return tmp;
-})
-const trueRef=ref(true);
-const goTop=()=>{
-  const tmp =document.getElementById('index') ;
-  tmp!.scrollIntoView();
+  if (percentage<90)return '#02B1AD';
+  if (percentage<=95)return '#6F7AD3';
+  if (percentage<=100)return '#67C23A';
 }
-watch(trueRef,()=>{
-  trueRef.value=true;
-})
-const falseRef=ref(false);
-watch(falseRef,()=>{
-  falseRef.value=false;
-})
-
-
-
 const kindColors = (percentage: number) =>
 {
   if (percentage<20)return "#69638A";
@@ -426,108 +515,17 @@ const rateFormat = (percentage: number) =>
   if (percentage<=100)return '神中神'+"("+percentage+")";
 
 }
-const thisPage=func.getThis();
-const rateColor = (percentage: number)=>
-{
-  if (percentage<60)return '#F56C6C';
 
-  if (percentage<75)return '#E6A23C';
-  if (percentage<85)return '#409EFF';
+const trueRef=ref(true);
 
-  if (percentage<90)return '#02B1AD';
-  if (percentage<=95)return '#6F7AD3';
-  if (percentage<=100)return '#67C23A';
-}
-
-onMounted(()=>{
-  if (!func.existToken(initCookie))
-  {
-    router.push('guest');
-    localStorage.clear();
-  }
-  else
-  {
-    const item =localStorage.getItem("user");
-    if (item ==null)
-    {
-      func.clearToken(initCookie);
-      ElMessage.error({message:"请重新登录！",duration:2000});
-      localStorage.clear();
-      router.push('guest');
-    }
-    else
-    {
-      food.value.id=thisPage.$route.query.id;
-      user.value= JSON.parse(localStorage.getItem("user") as string) as func.User;
-        func.getSingleFood(food.value.id,func.getToken(initCookie)).then(r=>{
-          const callBack=func.getResult(r);
-          if (callBack.success())
-          {
-            food.value=callBack.getData() as func.food;
-            imgURL.value="http://"+func.ip+":"+func.port+food.value.pic;
-            food.value.rate=Math.round (food.value.rate * 10) / 10;
-
-            func.getCommentList(food.value.id,func.getToken(initCookie)).then(r=>{
-              const callBack=func.getResult(r);
-              if (callBack.success())
-              {
-                comment.value=callBack.getData() as func.comment[];
-                for (let i of comment.value)
-                {
-                  if (i.userId===user.value.id)
-                  {
-                    alreadyRate.value=true;
-                    rateNumber.value=i.rate;
-                    rateContent.value=i.content;
-                  }
-                  i.rate=i.rate/20;
-
-                }
-                rateText.value="食物评分(共"+comment.value.length+"人评)";
-                loading2.value=false;
-
-
-              }
-              else
-              {
-                func.clearToken(initCookie);
-                localStorage.clear();
-                ElMessage.error({message:"请重新登录！",duration:2000});
-                router.push('guest');
-              }
-            })
-          }
-          else
-          {
-            func.clearToken(initCookie);
-            localStorage.clear();
-            ElMessage.error({message:"请重新登录！",duration:2000});
-            router.push('guest');}
-        }).catch(()=>{
-          router.push('index');
-        })
-      }
-
-  }
-
-
-
-
-
+watch(trueRef,()=>{
+  trueRef.value=true;
 })
-const backHello = ()=>{
-  router.push('hello');
-}
-const copyLink=()=>{
-  let input = document.createElement("input"); // 创建input对象
-  input.value = window.location.href; // 设置复制内容
-  document.body.appendChild(input); // 添加临时实例
-  input.select(); // 选择实例内容
-  document.execCommand("Copy"); // 执行复制
-  // navigator.clipboard.writeText(input.value)
-  document.body.removeChild(input); // 删除临时实例
-  ElNotification.success({message:"已复制链接！",duration:1000,showClose:false});
-}
+const falseRef=ref(false);
+watch(falseRef,()=>{
+  falseRef.value=false;
+})
+
 </script>
 
 <style scoped>

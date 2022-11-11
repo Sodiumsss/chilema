@@ -1,9 +1,13 @@
 <template>
   <el-skeleton animated :loading="loading">
     <template #default>
-      <el-link @click="backHollow">树洞</el-link>
+      <el-link @click="backHollow">返回树洞</el-link>
       <a style="margin-left: 10px;margin-right: 10px;">></a>
-      <el-link @click="copyLink">当前帖子</el-link>
+      <el-link @click="copyLink">复制此页链接</el-link>
+      <span v-if="thisHollow.userId===user.id">
+        <a style="margin-left: 10px;margin-right: 10px;">|</a>
+        <el-link style="color: blueviolet" @click="deleteThread">删除帖子</el-link>
+      </span>
       <br/>
       <h2 style="margin-top: 5px;margin-bottom: 5px;">{{thisHollow.title}}</h2>
       <el-row :gutter="10" justify="start">
@@ -19,21 +23,19 @@
           </el-button>
         </el-col>
 
-        <el-col :span="15">
+        <el-col :span="8">
           <el-tag v-if="thisHollow.userId !== user.id" class="threadTag">由{{thisHollow.senderName}}发送</el-tag>
           <el-tag v-if="thisHollow.userId === user.id" class="threadTag">你发送的！</el-tag>
 
         </el-col>
 
-        <el-col :span="1.5">
-          <el-tag type="danger" class="threadTag">赞{{thisHollow.likes}}</el-tag>
-        </el-col>
+        <el-col :span="11">
+          <el-row justify="end">
+            <el-tag type="danger" class="threadTag">赞{{thisHollow.likes}}</el-tag>
+            <el-tag type="success" class="threadTag">回复{{thisHollow.reply}}</el-tag>
+            <el-tag type="info" class="threadTag">{{getDiffTime(thisHollow.createTime)}}发表</el-tag>
+          </el-row>
 
-        <el-col :span="1.5">
-          <el-tag type="success" class="threadTag">回复{{thisHollow.reply}}</el-tag>
-        </el-col>
-        <el-col :span="2">
-          <el-tag type="info" class="threadTag">{{getDiffTime(thisHollow.createTime)}}</el-tag>
         </el-col>
       </el-row>
       <el-divider/>
@@ -77,7 +79,7 @@
 import * as func from "@/Set"
 import {onMounted, ref} from "vue";
 import router from "@/router";
-import {ElMessage, ElNotification} from "element-plus";
+import {ElMessage, ElMessageBox, ElNotification} from "element-plus";
 
 const thisPage=func.getThis();
 const initCookie=func.initCookie();
@@ -94,6 +96,7 @@ onMounted(()=>{
   threadId.value=thisPage.$route.query.pageId;
   if (threadId.value===0)
   {
+    console.log("no id")
    router.push('hollow');
   }
   else
@@ -134,8 +137,7 @@ const reply=()=>{
     if (callBack.success())
     {
       ElMessage.success({message:"回复成功！",duration:2000});
-
-      router.push({path:'/r',query:{j:'threadRead?pageId='+thisHollow.value.id}});
+      router.push({path:'/r',query:{j:'/threadRead?pageId='+thisHollow.value.id}});
     }
     else
     {
@@ -170,7 +172,7 @@ const like=()=>{
       {
         ElNotification.error({message:"点赞失败！",duration:1000,showClose:false});
       }
-    }).catch(r=>{
+    }).catch(()=>{
       ElNotification.error({message:"网络连接错误！",duration:1000,showClose:false});
 
     })
@@ -191,7 +193,7 @@ const like=()=>{
       {
         ElNotification.error({message:"取消点赞失败！",duration:1000,showClose:false});
       }
-    }).catch(r=>{
+    }).catch(()=>{
       ElNotification.error({message:"网络连接错误！",duration:1000,showClose:false});
 
     })
@@ -236,13 +238,41 @@ const getDiffTime=(oldTime : string)=>
   }
 }
 
+const deleteThread = ()=>{
+  ElMessageBox.confirm(
+      '该帖子下的回复也将被删除，此操作不可撤销。',
+      '你确定要删除吗？',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+  ).then(() =>
+  {
+    func.deleteMyselfById(thisHollow.value.id,func.getToken(initCookie)).then(r=>{
+      const callBack = func.getResult(r);
+      if (callBack.success())
+      {
+        ElNotification.success({message:"删除成功！",duration:1000,showClose:false});
+        router.push('hollow');
+      }
+      else
+      {
+        ElNotification.error({message:"删除失败，请联系管理员！",duration:1000,showClose:false});
+
+      }
+    }).catch(()=>{
+      ElNotification.error({message:"网络连接错误！",duration:1000,showClose:false});
+    })
+  })
+}
+
 const copyLink=()=>{
   let input = document.createElement("input"); // 创建input对象
   input.value = window.location.href; // 设置复制内容
   document.body.appendChild(input); // 添加临时实例
   input.select(); // 选择实例内容
   document.execCommand("Copy"); // 执行复制
-  navigator.clipboard.writeText(input.value)
   document.body.removeChild(input); // 删除临时实例
   ElNotification.success({message:"已复制链接！",duration:1000,showClose:false});
 }
@@ -252,5 +282,10 @@ const copyLink=()=>{
 .el-container { height: 100%; background-color: #63BF8E }
 .singleReply{
   margin-bottom: 8px;
+}
+
+.threadTag{
+  margin-right: 8px;
+
 }
 </style>

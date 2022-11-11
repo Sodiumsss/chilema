@@ -41,17 +41,17 @@
             </el-card>
           </el-main>
         </el-container>
-
         <el-footer class="footer">
           <el-row justify="center">
-            <el-space>
-              <el-link @click="aboutUs">加入我们</el-link>
-              <el-link @click="userReport">反馈信息</el-link>
-              <el-link @click="contract">联系管理员</el-link>
+            <el-space spacer="|">
+              <el-link style="color: black" @click="aboutUs">加入我们</el-link>
+              <el-link style="color: black" @click="userReport">反馈信息</el-link>
+              <el-link style="color: black" @click="contract">联系管理员</el-link>
 
             </el-space>
           </el-row>
         </el-footer>
+
       </el-container>
 
 </template>
@@ -59,10 +59,11 @@
 <script lang="ts" setup>
 import router from "@/router";
 import * as func from "@/Set"
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {createUserByData} from "@/Set";
 const initCookie=func.initCookie();
+const user =ref<func.User>(new func.User());
 onMounted(()=>{
   document.title='吃了吗';
   if (!func.existToken(initCookie))
@@ -83,6 +84,7 @@ onMounted(()=>{
       }
       else
       {
+        user.value=createUserByData(callBack);
         localStorage.setItem("user",JSON.stringify(createUserByData(callBack)));
       }
 
@@ -108,7 +110,7 @@ const handleSelect = (key: string) => {
   switch (key)
   {
     case 'hello':
-      router.push({path:'/r',query:{j:'hello'}});
+      router.push('hello');
       break;
     case 'profile':
       router.push('profile');
@@ -118,21 +120,25 @@ const handleSelect = (key: string) => {
       localStorage.clear();
       router.push('guest');
       break;
-
     case 'search':
       router.push('search');
       break;
     case 'hollow':
-      router.push('hollow');
+      if(user.value.hollow===0)
+      {
+        router.push('joinHollow');
+      }
+      else
+      {
+        router.push('hollow');
+      }
       break;
     case 'contribute':
       router.push('contribute');
       break;
-
     case 'suggest':
       router.push('suggest');
       break;
-
   }
 }
 </script>
@@ -149,6 +155,6 @@ const handleSelect = (key: string) => {
 .main{
   padding-top: 15px;
 }
-.footer {background-color: #FFF; text-align: center; line-height: 60px; }
+.footer { text-align: center; line-height: 60px; }
 
 </style>

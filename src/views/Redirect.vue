@@ -12,7 +12,10 @@ const jumpName=ref<string>("");
 const thisPage=func.getThis();
 onMounted(()=>{
   jumpName.value=thisPage.$route.query.j;
-  console.log("let's go to "+jumpName.value)
+  if (func.test)
+  {
+    console.log("let's go to "+jumpName.value)
+  }
   router.push(jumpName.value);
 
 })
