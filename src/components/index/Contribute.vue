@@ -93,7 +93,7 @@
             </el-row>
             <el-row  style="margin-top: 5px;" justify="center">
               <el-col :span="7">
-                <el-input v-if="foodAnotherLocationState"/>
+                <el-input v-model="foodAnotherLocation" v-if="foodAnotherLocationState"/>
               </el-col>
             </el-row>
 
@@ -186,7 +186,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { UploadInstance } from 'element-plus'
 import * as func from "@/Set"
 import {computed, ref} from "vue";
 const initCookie = func.initCookie();
