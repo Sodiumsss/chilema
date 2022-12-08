@@ -22,12 +22,9 @@
             <el-radio label='2'>二食堂</el-radio>
             <el-radio label='3'>三食堂(荷园)</el-radio>
             <el-radio label='4'>其它</el-radio>
-
           </el-radio-group>
         </el-space>
       </el-row>
-
-
     </el-tab-pane>
     <el-tab-pane label="按时段" name="4">
       <el-row justify="center">
@@ -82,7 +79,7 @@ const tabClick=(pane :any)=>{
 
 }
 
-</script>
+</script>Q
 
 <style scoped>
 
