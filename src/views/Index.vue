@@ -87,7 +87,6 @@ onMounted(()=>{
         user.value=createUserByData(callBack);
         localStorage.setItem("user",JSON.stringify(createUserByData(callBack)));
       }
-
     })
   }
 })

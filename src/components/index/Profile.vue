@@ -41,7 +41,6 @@ onMounted(()=> {
 })
 
 const change = ()=>{
-  console.log(user.value);
   func.setNickname(user.value,func.getToken(initCookie)).then((res)=>{
     if (res.data==="")
     {

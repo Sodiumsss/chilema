@@ -17,7 +17,6 @@ onMounted(()=>{
     console.log("let's go to "+jumpName.value)
   }
   router.push(jumpName.value);
-
 })
 
 </script>
